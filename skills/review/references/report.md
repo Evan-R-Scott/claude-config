@@ -31,7 +31,7 @@ Added / Modified / Deleted / Renamed / Untracked lists, with diffstat. Note anyt
 `path/to/file.ext:line` or `path/to/file.ext:first-last` (repo-relative, never a scratch path; add `(base)` for a removed line)
 > snippet
 
-Evidence: the command and result (`(confirmed)`). Explanation: what is wrong or missing and why it matters. Hint (optional): one line naming a direction, no code.
+Evidence: the command and result (`(confirmed)`). Explanation: what is wrong or missing and why it matters; when the direction is obvious, end with a clause saying which way to fix it (no code), as part of the same sentence flow, not a separate labelled line.
 
 ### Test Coverage Assessment
 
@@ -105,7 +105,7 @@ Summarize prior comments. If none: _No reviewer comments._
 `path/to/file.ext:line` or `path/to/file.ext:first-last` (repo-relative, never a scratch path; add `(base)` for a removed line)
 > snippet
 
-Evidence: the command and result (`(confirmed)`). Explanation: what is wrong or missing and why it matters. Hint (optional): one line naming a direction, no code.
+Evidence: the command and result (`(confirmed)`). Explanation: what is wrong or missing and why it matters; when the direction is obvious, end with a clause saying which way to fix it (no code), as part of the same sentence flow, not a separate labelled line.
 
 ### Test Coverage Assessment
 
