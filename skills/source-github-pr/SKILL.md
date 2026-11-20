@@ -1,0 +1,151 @@
+---
+name: source-github-pr
+description: "Reference for other skills, not run directly: how to read a GitHub pull request safely (metadata, comments, diff, an exported tree of the head in a scratch clone) and how to post a review on it."
+disable-model-invocation: true
+---
+
+# Source: GitHub pull request
+
+Used by `review` and any skill that needs a pull request's content. It works from a scratch clone, so the user's own clone and branch are never used or touched. It follows the standard source sections (see `review/references/engine.md`) and also has **Post**.
+
+## Detect
+
+The argument is a URL like `https://github.com/<owner>/<repo>/pull/<number>`.
+
+## Arguments
+
+Extract `<owner>/<repo>` and `<number>` from the URL. Optional `--trust` (see **Collect: trust**).
+
+## Collect: metadata
+
+```bash
+gh pr view <url> --json number,title,state,author,headRefName,headRefOid,baseRefName,reviewDecision,files,commits,isCrossRepository
+gh pr view <url> --json body,reviews,comments --jq '{body: .body[:3000], reviews: [.reviews[] | {author: .author.login, state, body: .body[:500]}], comments: [.comments[] | {author: .author.login, body: .body[:500]}]}'
+gh api repos/<owner>/<repo>/pulls/<number> --jq '.author_association, .base.sha'
+```
+
+The third command gives the author's association (`gh pr view` has no field for it) and the base commit. Bot pull requests can have 30 KB bodies and long review bodies, so the second command cuts them. `files`, `reviews` and `comments` are capped: for a bigger pull request use `gh api --paginate repos/<owner>/<repo>/pulls/<number>/files` (and `/reviews`, `/comments`).
+
+Hold: `headRefName`, `headRefOid`, `baseRefName`, `isCrossRepository`, `author.is_bot`, `author_association`, the base sha, `state`, `title`, `body`, `reviews`, `comments`, `reviewDecision` (an empty string means none), `files`. If MERGED or CLOSED, flag it in the report and review anyway (you cannot ask).
+
+## Collect: trust
+
+The PR is **trusted** if the user passed `--trust`, or if `isCrossRepository` is false (the branch lives in the repository itself, which needs write access) and either `author_association` is OWNER, MEMBER or COLLABORATOR or the author is a bot or GitHub App (`author.is_bot`, for example Dependabot). For a bot's dependency bump, install wheels only (`pip --only-binary :all:`, `npm --ignore-scripts`) and do not run it at all if the network cannot be cut when it must be. Otherwise it is **untrusted**: the engine runs none of its code (see the engine's **Trust**). Record which, and why.
+
+## Collect: inline comments
+
+```bash
+gh api --paginate repos/<owner>/<repo>/pulls/<number>/comments
+```
+
+Each has: `id`, `path`, `line`/`original_line`, `body`, `user.login`, `diff_hunk`.
+
+## Collect: the scratch clone
+
+Make one run directory with `mktemp -d <scratchpad>/review-XXXXXX` (or plain `mktemp -d` if the system prompt lists no scratchpad directory), call it `RUN`, and name it in the report. Never use the scratchpad directory itself as `RUN`, because the cleanup removes `RUN`. Do not use `--filter=blob:none`: exporting from a lazy clone fetches every blob in its own round trip and takes minutes. Then:
+
+```bash
+gh repo clone <owner>/<repo> <RUN>/repo -- --no-checkout --single-branch --branch <baseRefName>
+git -C <RUN>/repo fetch origin pull/<number>/head
+git -C <RUN>/repo rev-parse FETCH_HEAD
+```
+
+`rev-parse FETCH_HEAD` (run straight after the pull-head fetch, before any other fetch, because every fetch overwrites `FETCH_HEAD`; or use `git rev-parse <headRefOid>^{commit}`) must equal `headRefOid`; if the author pushed in between, re-read the metadata and start over with the new commit. If the clone or fetch fails, report the exact error and stop, with one exception: for a MERGED or CLOSED PR whose base branch was deleted (common for stacked PRs; the error says the remote branch was not found), clone the default branch instead (`gh repo clone <owner>/<repo> <RUN>/repo -- --no-checkout --single-branch`), then `git -C <RUN>/repo fetch origin pull/<number>/head`, run `git -C <RUN>/repo rev-parse FETCH_HEAD` and compare it with `headRefOid`, and only then `git -C <RUN>/repo fetch origin <base-sha>` (which overwrites `FETCH_HEAD`), and say so in the report.
+
+## Collect: the diff
+
+```bash
+gh pr diff <url>
+gh pr view <url> --json commits
+```
+
+`gh pr diff` works for open, closed and merged pull requests. If it fails on a very large pull request (HTTP 406), use `git -C <RUN>/repo diff <base-sha>...<headRefOid>`. Note the commits reviewed.
+
+## Collect: CI and earlier rounds
+
+```bash
+gh pr checks <url> 2>&1
+```
+
+A non-zero exit (no checks reported, or failing checks) is a CI result, not an error. Report CI as Pass / Fail / Pending / N/A, and remember that CI does not guarantee correctness. If earlier reviews or inline comments exist and new commits were pushed since, say so in the report (the user can run `--recheck`). For a re-check, the earlier findings are those in the report file or, if it is gone, the comments and reviews written by the current `gh` user (`gh api user --jq .login`).
+
+## Execution copy (also where to read the files)
+
+First run `git -C <RUN>/repo merge-base <headRefOid> <base-sha>` and note the SHA (`<MB>`; when the merge-base printed equals `headRefOid` (the head is already contained in the base, as in a merged PR), use the parent of the PR's first commit: `git -C <RUN>/repo rev-parse <first-commit-oid>^` with the oid from the `commits` metadata). Each Bash call is a separate shell, and zsh does not word-split variables, so write every command out literally with the SHAs pasted in; do not loop over unquoted variables. Then export the head and the base without applying the PR's `.gitattributes` (`git archive` would honor `export-ignore` and `export-subst`, which lets a PR hide files), using a temporary index:
+
+```bash
+GIT_INDEX_FILE=<RUN>/idx-head git -C <RUN>/repo read-tree <headRefOid>
+GIT_INDEX_FILE=<RUN>/idx-head git -C <RUN>/repo checkout-index -a --prefix=<RUN>/tree/
+GIT_INDEX_FILE=<RUN>/idx-base git -C <RUN>/repo read-tree <MB>
+GIT_INDEX_FILE=<RUN>/idx-base git -C <RUN>/repo checkout-index -a --prefix=<RUN>/base-tree/
+```
+
+Check, for each of the two trees, that the extracted files match the tree object, leaving out submodule entries (`checkout-index` only makes an empty directory for them). Use NUL-separated lists, so names with spaces, tabs or non-ASCII characters do not give a false mismatch (shown for the head; do the same for the base with `<MB>` and `<RUN>/base-tree`):
+
+```bash
+git -C <RUN>/repo ls-tree -r -z <headRefOid> | grep -zv '^160000 ' | cut -z -f2- | LC_ALL=C sort -z > <RUN>/want.lst
+find <RUN>/tree \( -type f -o -type l \) -printf '%P\0' | LC_ALL=C sort -z > <RUN>/have.lst
+cmp <RUN>/want.lst <RUN>/have.lst
+```
+
+A difference means the export is incomplete: stop and report the error; do not review a partial tree. Then list the symlinks the PR adds or changes (`find <RUN>/tree -type l`, compared with the base). A PR's symlinks are real symlinks: never Read or run through one whose target resolves outside the tree (for example `-> /etc/hostname` or `-> ~/.config/gh/hosts.yml`). Report such a link as a Security finding and show the link's target string (it is not file content); links inside the tree, such as `../shared` in a monorepo, are fine. Delete every `.env*` file from both trees: `find <RUN>/tree <RUN>/base-tree -type f -name '.env*' -delete`. `<RUN>/tree` is the execution copy and the place to read new files; `<RUN>/base-tree` (built from the merge-base `<MB>`, so a base branch that moved on does not skew it) is the base for the engine's "is this failure new?" re-run. Put the reviewed SHA in the report. At the end remove `<RUN>` (Go's module cache is read-only: run `chmod -R u+w <RUN>` first).
+
+## Read
+
+The new version of a file is in `<RUN>/tree`; the base is in `<RUN>/base-tree`. For a grep over the new code use `<RUN>/tree`.
+
+## Untouched check
+
+The user's clone is not used, so there is nothing to compare. Do not run any command in the user's working directory except the `gh` calls above.
+
+## Restrictions
+
+Never alter the user's checked-out branch or working tree, never push, commit or amend. Never post except in the **Post** section and only after explicit approval.
+
+## Post: build it, show it, ask (the caller only, never the review agent)
+
+The report has already been shown to the user in full. Then, in this order:
+
+1. **Pin the commit.** Re-read `headRefOid`. If it differs from the reviewed SHA, tell the user and do not continue.
+2. **Check for a pending review** of the current user (`gh api --paginate repos/<owner>/<repo>/pulls/<n>/reviews`, state PENDING) and tell the user instead of creating another; stop until the user decides.
+3. **Decide each finding's place.** Take the hunks of `gh pr diff` (if it fails with HTTP 406 on a large PR, use the `patch` field of `gh api --paginate repos/<owner>/<repo>/pulls/<n>/files`; if no diff is available at all, put every finding in the body) and note, per file, the new-file line numbers inside a hunk (added and context lines) and the old-file line numbers (removed and context lines). A finding whose `path:line` is in that set becomes an inline comment (`side: "RIGHT"`; a multi-line finding adds `start_line` and `start_side`, both ends inside one hunk); use `LEFT` with the old-file line only for a finding about a removed line, and only if that old-file line is in a hunk. Every other finding stays in the body. Use the new path for renamed files.
+4. **Re-review:** do not post a Still-open finding again as a new inline comment. If this account's earlier comment is still there, add a reply to it (a separate `POST .../pulls/<n>/comments/<id>/replies`, top-level comments only) or list it in the body. Say Resolved in the body. A finding another reviewer already raised: say "agrees with `<login>`" (in backticks) or drop it.
+5. **Write the payload** to a JSON file in the scratchpad with the Write tool (never a heredoc or `-f`: it may hold quoted PR text): `commit_id` (the reviewed SHA), `event`, `body` and `comments` (`path`, `line`, `side`, and `start_line`/`start_side` when needed, `body`). Write each reply body to its own JSON file.
+6. **Show it all and ask.** Show the user exactly what will be posted: the event (`COMMENT` unless the user asks for `APPROVE` or `REQUEST_CHANGES`; a report with the verdict INCOMPLETE is never posted as an approval), the full body, every inline comment (`path`, `line`, `side`, full text) and every reply. Do not post until the user explicitly approves that content. If they want changes, change the review text only (never the code), rebuild the payload and show it again.
+7. **Post, after re-checking `headRefOid` once more:**
+
+```bash
+gh api --method POST repos/<owner>/<repo>/pulls/<n>/reviews --input <payload.json>
+gh api --method POST repos/<owner>/<repo>/pulls/<n>/comments/<id>/replies --input <reply.json>
+```
+
+Post one review per round, never two. If the author is the current `gh` user, GitHub refuses `APPROVE` and `REQUEST_CHANGES`: use `COMMENT`. If GitHub answers 422, show the raw error to the user and stop; do not guess which comment failed and retry blindly.
+
+**Body:** the Summary, the Verdict, the findings that are not inline, Not verified, and the CI result. Leave out the checklist, local paths, the run directory and the `Report file:` line. A secret is shown as a short prefix and `path:line` only. Every posted text (body, inline comments, replies) follows two rules: write any `@name` (a user, a team, or code such as `@property`) in backticks so nobody is notified, and never include a secret's value. Put the evidence inside a code fence. A body over about 60000 characters (the cap is 65536) keeps the Summary, the Verdict and every finding of MEDIUM or above, and says what was left out.
+
+**Re-review body:** open with a "Previously raised findings" section: one entry per prior finding, `**[title]** - Resolved / Still open / Not re-verified` plus one line on what was run. Then new findings.
+
+**Finding format (body and inline, first review and re-review):**
+~~~
+**[SEVERITY] Short title** (`path/to/file:line`; leave the location out for an inline comment)
+
+What is wrong and why it matters, in 1-2 sentences.
+
+<details><summary>Evidence</summary>
+
+```
+the command and the observed result
+```
+
+</details>
+
+Hint (optional): one line naming a direction, never code or an exact change. The author decides the fix.
+~~~
+
+No `suggestion` blocks: the review states problems, the author writes the fix.
+
+No-issues body: `Looks good - no issues found.` followed by the CI result you collected (Pass, Fail, Pending or N/A) and the Not verified list. Never say CI is green unless it is.
+
+## Errors
+
+If `gh` errors (auth, private repo, rate limit), surface the raw error and stop.

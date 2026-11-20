@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(~/.claude/bin/capture-lesson.sh *)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/bin/lesson-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
