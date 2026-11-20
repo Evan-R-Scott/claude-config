@@ -40,7 +40,8 @@ Entries that fail are listed with the failing criterion and discarded. No repeti
 
 ## 4. Merge
 
-- Pick the right topic doc (`workflow`, `debugging`, `testing`, `communication`, `tooling`); add a new topic doc only when none fits and add its trigger to the "Read on demand" list in CLAUDE.md.
+- Merge only into topic docs: `docs/workflow.md`, `debugging.md`, `testing.md`, `communication.md`, `tooling.md`, and any this skill adds. `docs/README.md` and `docs/guide/` are for people and are never merge targets.
+- Pick the right topic doc; add a new topic doc only when none fits and add its trigger to the "Read on demand" list in CLAUDE.md.
 - Rewrite in place: merge duplicates, resolve contradictions by rewriting the rule (never keep both), prune rules that are obsolete or too specific. No dates, no changelog lines.
 - Each topic doc stays at or under 80 lines, each rule one or two sentences with its reason. Over the cap: merge or prune before adding.
 - CLAUDE.md stays lean (about 60 lines). Do not add lessons to it; only keep its trigger list in step with the docs.

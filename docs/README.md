@@ -1,6 +1,6 @@
-# How this works
+# Maintenance and setup
 
-Read this to understand the learning loop, set up a new laptop, or run `/curate`.
+Read this to maintain the learning loop, set up a new laptop, or undo a curation. Read [guide/how-it-works.md](guide/how-it-works.md) to understand how capture and curation work.
 
 - `CLAUDE.md` holds the always-on rules and a "Read on demand" list that points at the topic docs here.
 - Topic docs (`workflow`, `debugging`, `testing`, `communication`, `tooling`) hold general lessons, each capped at 80 lines.

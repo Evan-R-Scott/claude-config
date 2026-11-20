@@ -23,4 +23,5 @@ Claude captures lessons by itself. Only two things are manual:
 
 Review what is learned in `~/claude-config/docs/` (five short files, plus `CLAUDE.md`). Pending lessons wait in `~/claude-config/docs/_inbox.md`.
 
+Read [docs/guide/how-it-works.md](docs/guide/how-it-works.md) to understand how lessons are captured, curated and used.
 Read [docs/README.md](docs/README.md) for the full maintenance routine, undo steps and new-laptop setup.
