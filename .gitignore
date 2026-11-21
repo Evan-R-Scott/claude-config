@@ -2,3 +2,5 @@ docs/_inbox.md
 docs/_inbox.processing
 .DS_Store
 *Zone.Identifier
+.zshrc.local
+*.local

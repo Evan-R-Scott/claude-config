@@ -13,6 +13,16 @@ cd ~/claude-config && ./install.sh
 
 Install only some skills (their requirements come along): `./install.sh plan review`. See what exists: `./install.sh --list`. Preview first: add `--dry-run`.
 
+## Shell and terminal setup
+
+Optional: my zsh and WezTerm config, one script, works on Linux, macOS and WSL.
+
+```
+cd ~/claude-config && ./install-dotfiles.sh
+```
+
+Read [docs/dotfiles.md](docs/dotfiles.md) for what it does, how secrets are kept out and how to preview first.
+
 ## Keeping it up to date
 
 Claude captures lessons by itself. Only two things are manual:
