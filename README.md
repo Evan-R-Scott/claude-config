@@ -7,7 +7,7 @@ My portable Claude Code setup: global instructions, on-demand docs, generic skil
 Needs `git` and `python3`.
 
 ```
-git clone <this repo> ~/claude-config
+git clone https://github.com/Evan-R-Scott/claude-config.git ~/claude-config
 cd ~/claude-config && ./install.sh
 ```
 
