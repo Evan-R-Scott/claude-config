@@ -21,7 +21,7 @@ Optional: my zsh and WezTerm config, one script, works on Linux, macOS and WSL.
 cd ~/claude-config && ./install-dotfiles.sh
 ```
 
-Read [docs/dotfiles.md](docs/dotfiles.md) for what it does, how secrets are kept out and how to preview first.
+Read [dotfiles/README.md](dotfiles/README.md) for what it does, how secrets are kept out and how to preview first.
 
 ## Keeping it up to date
 

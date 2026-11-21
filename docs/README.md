@@ -29,6 +29,6 @@ Pending lessons: `cat ~/claude-config/docs/_inbox.md` (local to each laptop, not
 ## Notes
 
 - Linux and WSL are tested. macOS is untested. Native Windows is unsupported (use WSL).
-- `./install-dotfiles.sh` is a separate installer for the shell and terminal config. See [dotfiles.md](dotfiles.md).
+- `./install-dotfiles.sh` is a separate installer for the shell and terminal config. See [../dotfiles/README.md](../dotfiles/README.md).
 - Claude Code ignores a symlinked `~/.claude/CLAUDE.md` in Cowork desktop sessions; the CLI is unaffected.
 - `./install.sh` backs up anything it replaces under `~/.claude/backups/` and prints the path.
