@@ -15,7 +15,7 @@ Install only some skills (their requirements come along): `./install.sh plan rev
 
 ## Shell and terminal setup
 
-Optional: my zsh and WezTerm config, one script, works on Linux, macOS and WSL.
+Optional: my zsh and WezTerm config, one script, works on Linux and WSL (macOS untested).
 
 ```
 cd ~/claude-config && ./install-dotfiles.sh

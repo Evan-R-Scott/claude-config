@@ -4,7 +4,7 @@ Read this to install or change the zsh and WezTerm config in `dotfiles/`. It is 
 
 ## Install
 
-Needs `git`. Linux, macOS and WSL are supported; native Windows is not (run it from WSL).
+Needs `git`. Linux and WSL are supported, macOS is untested; native Windows is not (run it from WSL).
 
 ```
 cd ~/claude-config && ./install-dotfiles.sh
