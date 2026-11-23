@@ -61,7 +61,7 @@ Every write (editing, creating, restoring a backup) follows `~/.claude/skills/co
 
 ## Document-type skills
 
-Shared storage-format snippets (panels, tables, status lozenges, code blocks, steps) are in `references/storage-snippets.md`; read it when writing a new body.
+Shared storage-format snippets (panels, tables, status lozenges, code blocks, steps) are in `~/.claude/skills/confluence/references/storage-snippets.md`; read it when writing a new body.
 
 This skill is only the mechanics (read, search, edit, create). Content rules for a particular kind of document live in separate `doc-*` skills that publish through this one. Before drafting a new page or a rewrite, check the installed skills for one that matches the page's purpose and follow it for structure: `doc-design` for high-level system or architecture designs, `doc-runbook` for step-by-step runbooks and how-to docs (these also write Markdown files; `doc-render` handles both destinations). If none matches, write the page plainly; do not apply a template meant for another page type.
 

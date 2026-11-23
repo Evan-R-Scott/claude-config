@@ -104,7 +104,7 @@ Implementation Steps, Testing and Validation and Documentation Changes are alway
 
 ---
 
-*(PR fix mode: add the **PR Fix Context** section from `references/pr-fix-mode.md` here.)*
+*(PR fix mode: add the whole **PR Fix Context** section from `references/pr-fix-mode.md` here: the PR line, the triage table and every per-comment record.)*
 
 ---
 
@@ -155,7 +155,7 @@ Exact description of what to change/create. Show relevant code snippets or pseud
 
 ---
 
-*(PR fix mode: order the per-comment records as `references/pr-fix-mode.md` says.)*
+*(PR fix mode: the triage table and per-comment records stay under the PR Fix Context section after the Summary; only their order is set by the reference: by verdict.)*
 
 ---
 

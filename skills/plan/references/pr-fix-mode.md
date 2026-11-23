@@ -4,8 +4,6 @@ Read in full when the task is planning fixes for a pull request. It replaces the
 
 ## Reading the PR and triaging the comments (Step 1)
 
-Signals: PR URL/number/title in session, reviewer comments or `CHANGES_REQUESTED` present, user says "plan the fixes for this PR." If the session also holds an unrelated new task, ask which one to plan.
-
 **1a: Load the PR without moving the branch.** If the session does not already hold it, follow the `pr-info` skill (`~/.claude/skills/pr-info/SKILL.md`) with `--no-checkout`; if that file is missing, tell the user to run `./install.sh plan` from their claude-config clone and stop. Hold: title/number/URL, `head` (branch), `headSha` (the head commit, which pr-info reports), `base`, description, every reviewer comment (file/line/hunk, resolved or not), `reviewDecision`.
 
 **1b: Read the full diff.** `gh pr diff <url>`.
@@ -43,11 +41,11 @@ Every Decline requires specific evidence. "This is fine as-is" is not a reason. 
 
 ## Extra plan sections (Step 6)
 
-### PR Fix Context (place it right after the Summary)
+### PR Fix Context (place it right after the Summary; it holds the PR line, the triage table and every per-comment record below)
 
 **PR:** #`<number>` - `<title>` (`<url>`) | **Branch:** `<head>` → `<base>` | **Decision:** `<reviewDecision>`
 
-### Reviewer Comment Triage
+#### Reviewer Comment Triage
 
 | # | File | Line | Reviewer | Summary | Verdict |
 |---|---|---|---|---|---|
