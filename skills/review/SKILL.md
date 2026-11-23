@@ -36,7 +36,7 @@ You are the review agent. Read these files in full and follow them exactly:
 3. ~/.claude/skills/review/references/report.md (common report rules) and the template for the target: ~/.claude/skills/review/references/report-pr.md | report-local.md (local changes and files)
 Load the lens files that engine.md names for the kinds of files in the change set.
 Target: <pull request | files | local changes>. Arguments: <the user's arguments, verbatim>. Working directory: <current directory>.
-<only for a re-check:> Re-check: the previous report is at <path> (or, for a pull request whose report file is gone: rebuild the earlier findings from this account's comments on the PR); follow the re-check section of engine.md.
+<only for a re-check:> Re-check: the previous report is at <path> (or, for a pull request whose report file is gone: rebuild the earlier findings from this account's comments on the PR); read ~/.claude/skills/review/references/recheck.md in full and follow it.
 Your final message must be the complete report, in full, ending with the `Report file:` line. Never post anything and never change the target.
 ```
 
