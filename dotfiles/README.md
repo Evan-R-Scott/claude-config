@@ -19,6 +19,7 @@ cd ~/claude-config && ./install-dotfiles.sh
 ## Keeping credentials out
 
 - Put API keys, tokens and per-machine settings in `~/.zshrc.local`. The installer creates it (mode 600) and `dotfiles/zshrc` sources it. It is git-ignored.
+- `dotfiles/zshenv` (linked to `~/.zshenv`) also sources it. zsh reads `.zshenv` for every shell, so tools started from a non-interactive login shell, such as Claude Code, see your credentials; `.zshrc` alone is only read by interactive shells. Keep `~/.zshrc.local` to `export` lines. Check a clean shell with `env -i HOME=$HOME PATH=$PATH zsh -lc 'printenv VAR >/dev/null && echo set'`.
 - `./install-dotfiles.sh --scan` checks `dotfiles/` for key and token patterns, private keys and URLs with embedded passwords, and warns about hardcoded home paths. The installer refuses to run if it finds anything.
 - `./install-dotfiles.sh --hook` installs a pre-commit hook that runs the scan. Run it once per clone.
 - The scan is pattern-based, so skim a diff before pushing. If a secret was ever committed, rotate it; deleting the file does not remove it from history.

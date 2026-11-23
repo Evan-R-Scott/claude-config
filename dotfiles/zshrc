@@ -27,5 +27,10 @@ if [ -n "$WSL_DISTRO_NAME" ]; then
   }
 fi
 
+# --- nvm (loaded only when installed) ---
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+
 # --- Machine-local overrides (untracked): API keys, tokens, per-machine tweaks ---
 [ -f "$HOME/.zshrc.local" ] && . "$HOME/.zshrc.local"

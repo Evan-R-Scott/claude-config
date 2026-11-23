@@ -1,6 +1,6 @@
 #!/bin/sh
 # Install shell and terminal dotfiles (zsh, WezTerm) using symlinks.
-#   ./install-dotfiles.sh            link zshrc and wezterm config
+#   ./install-dotfiles.sh            link zshrc, zshenv and wezterm config
 #   ./install-dotfiles.sh --dry-run  print what would happen, change nothing
 #   ./install-dotfiles.sh --scan     scan dotfiles/ for credentials, change nothing
 #   ./install-dotfiles.sh --hook     install a git pre-commit hook that runs --scan
@@ -149,6 +149,7 @@ copy_to() { # $1 = source, $2 = destination; copy, backing up a different existi
 }
 
 link "$SRC/zshrc" "$HOME/.zshrc"
+link "$SRC/zshenv" "$HOME/.zshenv"
 
 if is_wsl; then
   WH=$(win_home)

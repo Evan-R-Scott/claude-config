@@ -1,0 +1,4 @@
+# Read by every zsh, interactive or not, so programs started from a non-interactive
+# shell (Claude Code, scripts, cron-like tools) see the credentials in ~/.zshrc.local.
+# Keep ~/.zshrc.local to exports: slow or interactive setup belongs in zshrc.
+[ -f "$HOME/.zshrc.local" ] && . "$HOME/.zshrc.local"
