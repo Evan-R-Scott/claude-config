@@ -46,7 +46,7 @@ When a PR URL is provided (`https://<host>/<owner>/<repo>/pull/<number>`). Never
 ### Step B1: Fetch PR metadata and diff
 
 ```bash
-gh pr view <url> --json number,title,body,headRefName,headRefOid,baseRefName,files --jq '{number,title,body:.body[:3000],headRefName,headRefOid,baseRefName,files:[.files[].path]}'
+gh pr view <url> --json number,title,body,headRefName,headRefOid,baseRefName,changedFiles,files --jq '{number,title,body:.body[:3000],headRefName,headRefOid,baseRefName,changedFiles,files:[.files[].path]}'
 gh pr diff <url>
 ```
 
@@ -61,7 +61,7 @@ Look for a local clone: `<repos-root>/<repo>` (last segment of `<owner>/<repo>`)
 
 ### Step B3: Identify files to explain
 
-Use the `files` list from the PR metadata. These are the files changed by this PR. Explain all of them unless there are more than 8 - in that case, list them all and ask the user which ones to focus on.
+Use the `files` list from the PR metadata (it holds at most 100 paths: compare it with `changedFiles`, and for a larger pull request say so and ask which area to explain). These are the files changed by this PR. Explain all of them unless there are more than 8 - in that case, list them all and ask the user which ones to focus on.
 
 ### Step B4: Proceed to Step 1 (load repo context) and Step 3 (explain files)
 

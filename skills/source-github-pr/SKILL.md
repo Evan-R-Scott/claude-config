@@ -74,6 +74,8 @@ A non-zero exit (no checks reported, or failing checks) is a CI result, not an e
 
 ## Execution copy (also where to read the files)
 
+This section needs GNU `find`, `cut` and `sort` (Linux and WSL; on macOS install coreutils and findutils and use `gfind`, `gcut`, `gsort`), or take the light path when the pull request is small.
+
 First run `git -C <RUN>/repo merge-base <headRefOid> <base-sha>` and note the SHA (`<MB>`; when the merge-base printed equals `headRefOid` (the head is already contained in the base, as in a merged PR), use the parent of the PR's first commit: `git -C <RUN>/repo rev-parse <first-commit-oid>^` with the oid from the `commits` metadata). Each Bash call is a separate shell, and zsh does not word-split variables, so write every command out literally with the SHAs pasted in; do not loop over unquoted variables. Then export the head and the base without applying the PR's `.gitattributes` (`git archive` would honor `export-ignore` and `export-subst`, which lets a PR hide files), using a temporary index:
 
 ```bash
