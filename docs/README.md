@@ -5,7 +5,7 @@ Read this to maintain the learning loop, set up a new laptop, or undo a curation
 - `CLAUDE.md` holds the always-on rules and a "Read on demand" list that points at the topic docs here.
 - Topic docs (`workflow`, `debugging`, `testing`, `communication`, `tooling`) hold general lessons, each capped at 80 lines.
 - While you work, Claude records general lessons with `bin/capture-lesson.sh` into `docs/_inbox.md` (local to each machine, not in git). A start-of-session reminder appears when 3 or more are pending.
-- Run `/curate` to merge them into the topic docs. It shows a diff and writes only after you confirm. The promotion gate is defined in `skills/curate/SKILL.md`.
+- Run `/curate` to merge them into the topic docs. It shows a diff and writes lessons only after you confirm (before that it only pulls and commits a checkpoint of your own uncommitted edits to the docs). The promotion gate is defined in `skills/curate/SKILL.md`.
 
 ## Maintenance routine
 
