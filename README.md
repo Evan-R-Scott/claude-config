@@ -15,7 +15,7 @@ Install only some skills (their requirements come along): `./install.sh plan rev
 
 ## Skills
 
-`plan`, `review` (with its `source-*` helpers), `understand`, `pr-info`, `jira` (needs [acli](https://developer.atlassian.com/cloud/acli/guides/install-acli/)), `confluence`, `doc-design` and `doc-runbook` (system design and runbook docs for Confluence or Markdown, with a hidden `doc-render`), `curate`, and `owasp-security` (a pinned submodule). `./install.sh --list` shows what each needs.
+`./install.sh --list` shows every skill, what it does and what it needs. `./install.sh --help` shows all options.
 
 ## Shell and terminal setup
 

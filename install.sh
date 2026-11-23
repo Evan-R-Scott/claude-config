@@ -2,7 +2,7 @@
 # Install this config into ~/.claude using symlinks.
 #   ./install.sh                 full install (CLAUDE.md, docs, bin, every skill, shared settings)
 #   ./install.sh plan review     only the named skills (and what they require); symlinks only
-#   ./install.sh --list          list skills and what they require
+#   ./install.sh --list          list skills, what each does and what it requires
 #   ./install.sh --dry-run ...   print what would happen, change nothing
 #   ./install.sh --update        pull the latest of vendored skills (git submodules); nothing else changes
 # Needs: sh. The full install also needs python3 (settings merge).
@@ -45,14 +45,23 @@ all_skills() {
   done
 }
 
+# First sentence of a skill's description (from its SKILL.md frontmatter), so --list never goes stale.
+skill_desc() {
+  sed -n 's/^description: *"\{0,1\}//p' "$ROOT/skills/$1/SKILL.md" | head -n 1 | sed 's/"$//' |
+    awk '{ i = index($0, ". "); if (i > 0) $0 = substr($0, 1, i);
+          if (length($0) > 100) { $0 = substr($0, 1, 100); sub(/ [^ ]*$/, "", $0); $0 = $0 "..." }
+          print }'
+}
+
 if [ "$LIST" = 1 ]; then
   for s in $(all_skills); do
     req=$(read_requires "$s" | tr '\n' ' ' | sed 's/[[:space:]]*$//')
     case " $req " in
       *" @full-install "*) say "$s  (full install only)" ;;
       "  ") say "$s" ;;
-      *) say "$s  requires: $req" ;;
+      *) say "$s  (requires: $req)" ;;
     esac
+    say "    $(skill_desc "$s")"
   done
   exit 0
 fi
