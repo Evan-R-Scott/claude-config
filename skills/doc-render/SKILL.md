@@ -29,17 +29,19 @@ Write the draft as plain Markdown first. It is the working format the user revie
 |---|---|
 | Summary panel | A `> [!NOTE]` alert whose first line is `**Summary**` (GitHub alert syntax; use a plain blockquote if the site does not support alerts) |
 | Table of contents | Omit on GitHub (it shows one); a manual list of links for docs sites without one |
-| Design decision / info panel | `> [!NOTE]` with a bold title line |
+| Design decision / note panel | `> [!NOTE]` with a bold title line (GitHub advises few alerts per page, so keep to the ones that matter) |
 | Warning panel | `> [!WARNING]` (use `> [!CAUTION]` for destructive steps) |
 | Tip panel | `> [!TIP]` |
 | Status lozenge | Bold text: `**New failure**` (no colour dependence) |
 | Tables, lists, headings, code | Standard Markdown; code fences with a language |
-| Page metadata line | A line under the summary (for example `Status: Draft, Owner: team, Last reviewed: date`, separated by commas because a pipe splits a table cell), or front matter when the repo uses it |
+| Page metadata line | A line under the summary (for example `Status: Draft, Owner: team, Last reviewed: date` for a design doc or `Type: Procedure, Owner: team, Last tested: date (run end to end), Review: quarterly` for a runbook, separated by commas because a pipe splits a table cell), or front matter when the repo uses it |
 | Diagram | A fenced `mermaid` block (renders on GitHub and most docs sites); fall back to a text diagram only if the destination cannot render it |
 | Procedure step with command and result | Numbered list item with an indented code fence and an `Expected:` line |
 
 4. **Links** between docs are relative paths that resolve from the file's folder; check each target exists.
 
 ## 4. Confluence
+
+**Restructuring an existing page that has macros, layouts or link cards:** do not round-trip it through Markdown (that drops them, which the `confluence` skill forbids). Use Markdown only for the outline shown to the user, and do the restructure on the storage body by moving whole section fragments; replacing the whole body needs its own named confirmation. A new page, or a page of plain text, can be rendered from the Markdown draft.
 
 Convert the Markdown draft with the exact snippets in `~/.claude/skills/confluence/references/storage-snippets.md` (alert to macro: the `**Summary**` alert is the `info` panel, `[!NOTE]` is `note`, `[!WARNING]` and `[!CAUTION]` are `warning`, `[!TIP]` is `tip`; a mermaid block becomes the diagram placeholder or a code block), and publish only through the `confluence` skill's create or edit flow (diff, confirmation, backup, verification). The Markdown draft is what the user approved; the diff shown before writing is the storage-format change. Diagrams: the confluence skill cannot upload images, so leave a labeled placeholder (or a code block with the mermaid source) and tell the user what to attach.

@@ -2,7 +2,11 @@
 
 Structure follows what readers of production architecture documentation need, combining arc42 (context, building blocks, runtime view, cross-cutting concepts, decisions, risks), the C4 model (context and container diagrams), and the design-doc convention (goals and non-goals, alternatives considered). The page type is Diataxis "explanation": it explains what the system is and why it is built this way. It does not teach (tutorial), give task steps (use `doc-runbook`) or list every detail (reference, the README).
 
-This is a checklist of what a reader may need, not a form. Keep the order. **Core** sections are on every page. The others are included only when they have something real to say for this system; never fill a section to complete the template, and say "not applicable" only when a reader would otherwise wonder. Small system: core sections only. Large or critical system (many components, external users, data, security or availability stakes): add what applies.
+This is a checklist of what a reader may need, not a form. Keep the section order below. **Core** sections are on every page. The others are included only when they have something real to say for this system; never fill a section to complete the template, and say "not applicable" only when a reader would otherwise wonder. Small system: core sections only. Large or critical system (many components, external users, data, security or availability stakes): add what applies.
+
+## Section order (the only order; core sections marked *)
+
+1. Summary * 2. Page metadata * 3. Table of contents * 4. Why it exists * 5. Capabilities * 6. Quality goals 7. Non-goals * 8. Constraints and assumptions 9. System overview * 10. Components * 11. Key flows 12. Data 13. Domain section(s) 14. Output 15. Deployment and operations 16. Reliability and failure behavior * 17. Cross-cutting concerns 18. Decisions and alternatives 19. Risks, open questions and limitations * 20. Using it from tools 21. Glossary 22. Related * (always last). The positions named in the details below agree with this list; when in doubt this list wins.
 
 ## Core sections
 

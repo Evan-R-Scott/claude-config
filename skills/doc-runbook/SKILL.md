@@ -1,6 +1,6 @@
 ---
 name: doc-runbook
-description: "Write or restructure a RUNBOOK or HOW-TO document: step-by-step instructions to use a tool, perform an operational task, or respond to an alert or failure, with a fixed template, as a Confluence page or a Markdown file in a repo. Use ONLY for procedural, task-oriented docs. Do NOT use for system or architecture design docs (doc-design), meeting notes, status or release notes, API or reference docs, post-mortems, or decision records. Usage: /doc-runbook <task | existing doc path or url>"
+description: "Write or restructure a RUNBOOK or HOW-TO document: step-by-step instructions to use a tool, perform an operational task, or respond to an alert or failure, with a fixed template, as a Confluence page or a Markdown file in a repo. Use for a runbook, playbook, SOP, on-call or alert-response procedure, "how do I" or "what to do when X fires" page. Use ONLY for procedural, task-oriented docs. Do NOT use for system or architecture design docs (doc-design), a README, onboarding guide or tutorial, meeting notes, project plans or status, release notes, API, CLI or reference docs, post-mortems, or ADRs and decision records. Usage: /doc-runbook <task | existing doc path or url>"
 metadata:
   version: "1.0.0"
   category: documentation
@@ -21,7 +21,7 @@ Do not use it for pages that explain what a system is and why it is built that w
 
 ## Workflow
 
-1. **Gather facts, do not invent them.** Sources: the user, the repo (README, scripts, CI config), tickets (`/jira`), existing pages (`confluence` skill, read-only), tool `--help` output. Every command and expected output in the page must come from a source or from running a safe, read-only command; never write a command you have not seen documented. Missing or uncertain details become questions, not guesses.
+1. **Gather facts, do not invent them.** Sources: the user, the repo (README, scripts, CI config), tickets (`/jira` when installed), existing pages (`confluence` skill, read-only), tool `--help` output. Every command and expected output in the page must come from a source or from running a safe, read-only command; never write a command you have not seen documented. Missing or uncertain details become questions, not guesses.
 2. **Pick the type and fit the template** in `references/template.md`: Procedure (steps in a fixed order) or Alert response (triage, mitigate, then fix). Keep the page to one task or one alert. Keep section order, drop an optional section when it has nothing real to say; the template is a checklist, not a form.
 3. **Draft in Markdown first** and show it to the user with the gaps listed. Ask who owns the page, who is escalated to, when to escalate, and whether the procedure is safe to repeat.
 4. **Choose the destination and render it** by following `~/.claude/skills/doc-render/SKILL.md`: Confluence page or Markdown file, with its rendering rules, publishing flow and confirmation steps. For a rewrite of an existing doc, keep the macros, images and links you are not changing.
