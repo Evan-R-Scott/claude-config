@@ -19,7 +19,7 @@ The plan must always include: implementation steps, testing/validation, and docu
 
 **Standing permissions (pre-authorized, no confirmation needed):** Reading any file. Web searches. These match the global standing permissions and require no user prompt.
 
-**Write restriction:** Strictly read-only. Do not create, modify, or delete any file or run any mutating command. Output is the plan document and questions to the user only.
+**Write restriction:** Read-only. Do not create, modify, or delete any file or run any mutating command. The one exception is the PR branch checkout done by `pr-info` in Mode A (it refuses on a dirty tree). Output is the plan document and questions to the user only.
 
 ---
 
@@ -31,19 +31,12 @@ Read the last several messages. Determine mode first - it changes scope and fram
 
 Signals: PR URL/number/title in session, reviewer comments or `CHANGES_REQUESTED` present, user says "plan the fixes for this PR."
 
-**1a: Load PR metadata from session.** If not yet fetched:
-```bash
-gh pr view <url> --json number,title,body,state,author,headRefName,baseRefName,reviewDecision,reviews,comments,files
-gh api repos/<owner>/<repo>/pulls/<number>/comments
-```
-Hold: PR title/number/URL, `headRefName`, `baseRefName`, original PR description, every reviewer comment (top-level and inline with file/line/diff_hunk), `reviewDecision`.
+**1a: Load the PR.** If the session does not already hold it, follow the `pr-info` skill (`~/.claude/skills/pr-info/SKILL.md`): it resolves any PR URL or `owner/repo#N`, fetches metadata, CI and review threads, and checks out the PR branch when the current directory is that repo's clone. Hold: title/number/URL, `headRefName`, `baseRefName`, description, every reviewer comment (file/line/hunk, resolved or not), `reviewDecision`.
 
-**1b: Check out branch and read full diff.**
+**1b: Read the full diff.**
 ```bash
-git fetch origin <headRefName> && git checkout <headRefName> && git pull --ff-only
-git log origin/<baseRefName>..HEAD --oneline --no-decorate
-git diff origin/<baseRefName>...HEAD
-git diff origin/<baseRefName>...HEAD --name-status
+gh pr diff <url>
+git log origin/<baseRefName>..HEAD --oneline --no-decorate   # only when on the PR branch
 ```
 
 **1c: Read every changed file in full.** A/M/R: Read tool. D: `git show origin/<baseRefName>:<filepath>`. Read related files if a changed file calls into them and a reviewer comment is relevant.
@@ -99,15 +92,15 @@ Read `CLAUDE.md` at the repo root (follow any triggers relevant to the task), `C
 
 ## Step 3: Read the codebase
 
-Read every file relevant to the task. Understand the current architecture, the patterns in use, what already exists that might be reused or extended, and what the task will touch or interact with. For net-new work: understand the system well enough to design something that fits. For PR fix work: already done in 1b-1c.
+For anything beyond a few files, delegate the sweep to an Explore subagent (breadth "medium") and keep only its conclusions in this session; read the few decisive files yourself. Read every file relevant to the task. Understand the current architecture, the patterns in use, what already exists that might be reused or extended, and what the task will touch or interact with. For net-new work: understand the system well enough to design something that fits. For PR fix work: already done in 1b-1c.
 
-Do not skip this step. A plan written without reading the code will miss interactions, duplicate existing logic, or design against the grain of the codebase.
+Do not skip this step, however it is done. A plan written without reading the code will miss interactions, duplicate existing logic, or design against the grain of the codebase.
 
 ---
 
 ## Step 4: Web search for documentation and best practice
 
-Research every significant technical decision before designing anything. Use official docs, not memory. APIs change, best practices evolve, and libraries deprecate.
+Scale research to risk. Search for every decision that depends on an external API, library version, security pattern or practice you are not certain is current; skip it for purely internal changes the codebase already settles. Use official docs, not memory. APIs change, best practices evolve, and libraries deprecate.
 
 **Search for every relevant component:**
 - Language feature or API being used: confirm correct usage and current version
@@ -139,7 +132,7 @@ Ask for every component:
 
 ## Step 6: Write the plan
 
-Every section required. Vague steps are useless.
+Implementation Steps, Testing and Validation and Documentation Changes are always required. Include every other section only when it adds information for this task (a one-file fix does not need a component diagram or scalability design). Vague steps are useless.
 
 ---
 
@@ -330,7 +323,7 @@ Present the plan in full. Ask whether to proceed or revise. Do not start impleme
 
 - **PR fix mode:** Read the full diff and every changed file before designing (1b-1c). Triage every comment before planning any step (1d). Every Decline needs specific evidence. Every implementation step must trace to an Implement verdict.
 - Never skip Step 3 (read the codebase) - a plan written without reading the code will miss interactions or design against the grain.
-- Never skip Step 4 (web search) - APIs and best practices change.
+- Step 4 (web search) is proportional, but never design from memory around an API, version or security practice that may have changed.
 - No generic boilerplate. Every step, check, and doc change must be specific to this task.
 - Cite every design decision that came from a documentation source.
 - Do not start implementation - this skill produces a plan only.

@@ -10,11 +10,11 @@ Used by `review` and any skill that needs a pull request's content. It works fro
 
 ## Detect
 
-The argument is a URL like `https://github.com/<owner>/<repo>/pull/<number>`.
+The argument is a URL like `https://<host>/<owner>/<repo>/pull/<number>` (`github.com` or any GitHub Enterprise host `gh` is logged in to).
 
 ## Arguments
 
-Extract `<owner>/<repo>` and `<number>` from the URL. Optional `--trust` (see **Collect: trust**).
+Extract `<host>`, `<owner>/<repo>` and `<number>` from the URL. For a host other than github.com add `--hostname <host>` to every `gh api` command below and clone with `gh repo clone <host>/<owner>/<repo>`. Optional `--trust` (see **Collect: trust**).
 
 ## Collect: metadata
 

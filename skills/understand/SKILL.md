@@ -25,10 +25,10 @@ The user invokes this skill in one of two ways:
 
 **Mode B - PR URL:**
 ```
-/understand <github-pr-url>
+/understand <pr-url>
 ```
 
-Parse the args to determine which mode applies. If the first token starts with `https://github.com`, it is a PR URL - use Mode B. Otherwise use Mode A.
+Parse the args to determine which mode applies. If the first token matches `https://<host>/<owner>/<repo>/pull/<n>` (any host `gh` can reach), it is a PR URL - use Mode B. Otherwise use Mode A.
 
 ---
 
@@ -40,40 +40,23 @@ Parse the args to extract the repo name (first token) and the list of files (all
 
 ## Mode B: PR URL
 
-When a GitHub PR URL is provided (format: `https://github.com/<owner>/<repo>/pull/<number>`):
+When a PR URL is provided (`https://<host>/<owner>/<repo>/pull/<number>`). Never check out a branch in the user's clone: it can fail on a dirty tree and it moves their work.
 
 ### Step B1: Fetch PR metadata and diff
 
-Run in one call:
 ```bash
-gh pr view <url> --json number,title,body,headRefName,baseRefName,files
+gh pr view <url> --json number,title,body,headRefName,headRefOid,baseRefName,files --jq '{number,title,body:.body[:3000],headRefName,headRefOid,baseRefName,files:[.files[].path]}'
+gh pr diff <url>
 ```
 
-Then fetch the full diff:
-```bash
-gh api repos/<owner>/<repo>/pulls/<number> -H "Accept: application/vnd.github.v3.diff" 2>&1
-```
+Hold the head commit (`headRefOid`), the changed file list and the diff. If `gh` fails (auth, no access), show the raw error and stop.
 
-Extract:
-- `headRefName` - the PR branch
-- `baseRefName` - the target branch
-- `files` - list of changed file paths
-- The diff itself - what lines were added/removed in each file
+### Step B2: Find the files at the PR head
 
-### Step B2: Derive the repo name
+Look for a local clone: `<repos-root>/<repo>` (last segment of `<owner>/<repo>`), or the current directory. Accept it only if `git remote -v` contains `<host>/<owner>/<repo>`. Then:
 
-Map the GitHub repo name to the local clone directory. The local clone is at `<repos-root>/<repo-name>` where `<repo-name>` is the last path segment of the GitHub repo URL (e.g. `example-org/example-repo` → `example-repo`).
-
-### Step B3: Check out the PR branch
-
-```bash
-cd <repos-root>/<repo-name>
-git fetch origin <headRefName>
-git checkout <headRefName>
-git pull --ff-only
-```
-
-If the checkout fails, report the error and stop.
+- If the clone's `git rev-parse HEAD` equals `headRefOid`, read files from the working tree. Use that clone for CLAUDE.md and `<repo-root>` below.
+- Otherwise do not switch branches. Read each file at the PR head with `gh api --hostname <host> repos/<owner>/<repo>/contents/<path>?ref=<headRefOid> -H "Accept: application/vnd.github.raw"`, and take CLAUDE.md from the same API (or from the local clone's current checkout if the API has none). With no local clone, say so and explain from the diff and API content alone.
 
 ### Step B4: Identify files to explain
 
