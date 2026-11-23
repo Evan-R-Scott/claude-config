@@ -13,7 +13,7 @@ Used by `doc-design`, `doc-runbook` and any other `doc-*` skill after the conten
 Do not stop and do not guess silently. Draft the whole document and:
 
 - Record every unanswered question as an assumption or open question inside the document: in "Risks, open questions and limitations" for a design doc, in "Open questions and assumptions" for a runbook. Never write an unknown as a fact. Owner and status: write "unassigned (to confirm)" and "Draft".
-- Mark a claim you read in code or docs but did not run as "(inferred, not run)". Never write "Last reviewed" or "Last tested" with a date nobody earned: write "not yet reviewed" or "not run end to end".
+- Mark a claim you read in code or docs but did not run as "(inferred, not run)": tag the surprising or risky ones individually, and when nearly every claim is inferred say so once under the metadata instead of tagging every sentence. Never write "Last reviewed" or "Last tested" with a date nobody earned: write "not yet reviewed" or "not run end to end".
 - If no destination was given, or nobody can give the confirmation a publish needs (a Confluence create or edit, a whole-body replacement), write the Markdown draft to a local file at the default path, publish nothing, and say so in the final message.
 - List the open questions and the unverified claims again in your final message, so the human sees them without opening the file.
 

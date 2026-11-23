@@ -10,7 +10,7 @@ You were given a target (local changes, a pull request, or files) and the source
 
 **Small untrusted or non-executable target (the source skill calls it the Light path):** nothing of the target's code runs, so skip E5 entirely, the base re-run in E4a, the run steps of E4b (static checks only: parse, lint with your own rules, grep) and the large-change and svn text. Read the rest as written. This is the cheap path for a tiny pull request.
 
-**Small trusted change (a working-copy change of about 50 changed lines or fewer):** still read and run everything that bears on correctness, but skip E2 and E6 unless a dependency or an external API changed, load only the lens for the kinds of files in the change, and write the checklist grouped by mark. The depth stays; the ceremony shrinks.
+**Small trusted change (a working-copy change of about 50 changed lines or fewer):** still read and run everything that bears on correctness, but write `N/A` with the reason for E2 and E6 unless a dependency or an external API changed, load only the lens for the kinds of files in the change, and write the checklist grouped by mark. The depth stays; the ceremony shrinks.
 
 **The target is someone's work in progress.** Do not modify, stash, revert, reset, checkout, clean, add, commit, push or otherwise touch any file or version-control state in it. Run nothing that writes into it. All execution of the target's code happens in the throwaway copy (E5), which you remove before finishing (the E4a scanners are the stated exception).
 
