@@ -40,8 +40,9 @@ read_requires() {
 }
 
 all_skills() {
-  for d in "$ROOT"/skills/*/; do
-    [ -d "$d" ] && basename "$d"
+  for d in "$ROOT"/skills/*; do
+    # a vendored skill is a symlink into a submodule: listed even before the submodule is fetched
+    { [ -d "$d" ] || [ -L "$d" ]; } && basename "$d"
   done
 }
 
@@ -61,7 +62,7 @@ if [ "$LIST" = 1 ]; then
       "  ") say "$s" ;;
       *) say "$s  (requires: $req)" ;;
     esac
-    say "    $(skill_desc "$s")"
+    if [ -f "$ROOT/skills/$s/SKILL.md" ]; then say "    $(skill_desc "$s")"; else say "    (vendored: fetched by ./install.sh)"; fi
   done
   exit 0
 fi
