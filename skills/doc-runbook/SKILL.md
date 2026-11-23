@@ -17,7 +17,7 @@ A template for documents whose job is to get a reader through a task correctly: 
 
 Use it when the reader will **follow the page to do something**: "how to use X", "how to rotate Y", "what to do when alert Z fires", an on-call or deployment procedure, a setup guide.
 
-Do not use it for pages that explain what a system is and why it is built that way (that is `doc-design`), or for meeting notes, status or release notes, API or CLI reference, post-mortems, or decision records. If the purpose is unclear, ask one question ("will someone follow this page step by step to do a task?") before applying the template.
+Do not use it for pages that explain what a system is and why it is built that way (that is `doc-design`), or for a README, onboarding guide or tutorial, meeting notes, project plans or status, release notes, API or CLI reference, post-mortems, or ADRs and decision records. If the purpose is unclear, ask one question ("will someone follow this page step by step to do a task?") before applying the template.
 
 ## Workflow
 

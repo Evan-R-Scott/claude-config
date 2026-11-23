@@ -31,11 +31,11 @@ Read the last several messages. Determine mode first - it changes scope and fram
 
 Signals: PR URL/number/title in session, reviewer comments or `CHANGES_REQUESTED` present, user says "plan the fixes for this PR." If the session also holds an unrelated new task, ask which one to plan.
 
-**1a: Load the PR without moving the branch.** If the session does not already hold it, follow the `pr-info` skill (`~/.claude/skills/pr-info/SKILL.md`) with `--no-checkout`; if that file is missing, tell the user to run `./install.sh plan` from their claude-config clone and stop. Hold: title/number/URL, `headRefName`, `headRefOid`, `baseRefName`, description, every reviewer comment (file/line/hunk, resolved or not), `reviewDecision`.
+**1a: Load the PR without moving the branch.** If the session does not already hold it, follow the `pr-info` skill (`~/.claude/skills/pr-info/SKILL.md`) with `--no-checkout`; if that file is missing, tell the user to run `./install.sh plan` from their claude-config clone and stop. Hold: title/number/URL, `head` (branch), `headSha` (the head commit, which pr-info reports), `base`, description, every reviewer comment (file/line/hunk, resolved or not), `reviewDecision`.
 
 **1b: Read the full diff.** `gh pr diff <url>`.
 
-**1c: Read every changed file in full, at the PR head.** If the current directory is a clone of the PR's repo and `git rev-parse HEAD` equals `headRefOid`, read the working tree. Otherwise read each file at the head with `gh api --hostname <host> repos/<owner>/<repo>/contents/<path>?ref=<headRefOid> -H "Accept: application/vnd.github.raw"`, and a deleted file at the base the same way with `ref=<baseRefName>`. Read related files if a changed file calls into them and a reviewer comment is relevant; read callers and conventions in the clone's current checkout, and say so when it is not the PR head.
+**1c: Read every changed file in full, at the PR head.** If the current directory is a clone of the PR's repo and `git rev-parse HEAD` equals `headSha`, read the working tree. Otherwise read each file at the head with `gh api --hostname <host> repos/<owner>/<repo>/contents/<path>?ref=<headSha> -H "Accept: application/vnd.github.raw"`; the removed content of a deleted file is in the `gh pr diff` output, so it needs no separate read. Read related files if a changed file calls into them and a reviewer comment is relevant; read callers and conventions in the clone's current checkout, and say so when it is not the PR head.
 
 **1d: Classify and evaluate every reviewer comment.**
 

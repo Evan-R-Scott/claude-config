@@ -6,31 +6,31 @@ This is a checklist of what a reader may need, not a form. Keep the section orde
 
 ## Section order (the only order; core sections marked *)
 
-1. Summary * 2. Page metadata * 3. Table of contents * 4. Why it exists * 5. Capabilities * 6. Quality goals 7. Non-goals * 8. Constraints and assumptions 9. System overview * 10. Components * 11. Key flows 12. Data 13. Domain section(s) 14. Output 15. Deployment and operations 16. Reliability and failure behavior * 17. Cross-cutting concerns 18. Decisions and alternatives 19. Risks, open questions and limitations * 20. Using it from tools 21. Glossary 22. Related * (always last). The positions named in the details below agree with this list; when in doubt this list wins.
+1. Summary * 2. Page metadata * 3. Table of contents (when longer than a screen) 4. Why it exists * 5. Capabilities * 6. Quality goals 7. Non-goals * 8. Constraints and assumptions 9. System overview * 10. Components * 11. Key flows 12. Data 13. Domain section(s) 14. Output 15. Deployment and operations 16. Reliability and failure behavior * 17. Cross-cutting concerns 18. Decisions and alternatives 19. Risks, open questions and limitations * 20. Using it from tools 21. Glossary 22. Related * (always last). The positions named in the details below agree with this list; when in doubt this list wins.
 
 ## Core sections
 
-1. **Summary** (info panel, first thing on the page). What the system does, for whom, and its key contribution, in 2-3 sentences. No history or internals. A reader who stops here still knows what the system is.
+- **Summary** (info panel, first thing on the page). What the system does, for whom, and its key contribution, in 2-3 sentences. No history or internals. A reader who stops here still knows what the system is.
 
-2. **Page metadata** (one line): Status (Draft, Approved or Superseded), Owner (team or role), Last reviewed (date), Audience.
+- **Page metadata** (one line): Status (Draft, Approved or Superseded), Owner (team or role), Last reviewed (date), Audience.
 
-3. **Table of contents** (levels 2-3), for pages longer than a screen.
+- **Table of contents** (levels 2-3), for pages longer than a screen.
 
-4. **Why it exists** (h2). The problem today, who feels it, what it costs, and why this system answers it, in one paragraph. Cost of the status quo, not a feature list.
+- **Why it exists** (h2). The problem today, who feels it, what it costs, and why this system answers it, in one paragraph. Cost of the status quo, not a feature list.
 
-5. **Capabilities** (h2). Two-column table Capability | Description: what users can do, from the user's side. Key external references (config, manifests, shared locations, dashboards) in one line under the table.
+- **Capabilities** (h2). Two-column table Capability | Description: what users can do, from the user's side. Key external references (config, manifests, shared locations, dashboards) in one line under the table.
 
-6. **Non-goals** (h2). Things a reader might reasonably expect that the system deliberately does not do, each with one sentence on the boundary or who owns it instead. Not negated goals such as "must not crash".
+- **Non-goals** (h2). Things a reader might reasonably expect that the system deliberately does not do, each with one sentence on the boundary or who owns it instead. Not negated goals such as "must not crash".
 
-7. **System overview** (h2). Context first: who and what the system talks to (users, upstream and downstream systems) and what is inside and outside its boundary, then one diagram of the main parts and the flow (C4 context and container levels; one diagram each at most) with a caption of how to read it.
+- **System overview** (h2). Context first: who and what the system talks to (users, upstream and downstream systems) and what is inside and outside its boundary, then one diagram of the main parts and the flow (C4 context and container levels; one diagram each at most) with a caption of how to read it.
 
-8. **Components** (h2). One sentence on how a request or run moves through the parts, then a numbered list of the parts in order, then one h3 per part: its responsibility, what it does in order, what it refuses or hands off, its interfaces. Record each local non-obvious choice as a **Design decision** note panel: the decision, the alternative it avoids, the consequence accepted, how that consequence is handled.
+- **Components** (h2). One sentence on how a request or run moves through the parts, then a numbered list of the parts in order, then one h3 per part: its responsibility, what it does in order, what it refuses or hands off, its interfaces. Record each local non-obvious choice as a **Design decision** note panel: the decision, the alternative it avoids, the consequence accepted, how that consequence is handled.
 
-9. **Reliability and failure behavior** (h2). Bullets, each a bold lead plus one sentence: partial results, cleanup on error or abort, what is never cancelled or released, what is never silent, what is safe to delete, and what happens when each dependency is down.
+- **Reliability and failure behavior** (h2). Bullets, each a bold lead plus one sentence: partial results, cleanup on error or abort, what is never cancelled or released, what is never silent, what is safe to delete, and what happens when each dependency is down.
 
-10. **Risks, open questions and limitations** (h2). Known risks with their mitigation, questions not yet decided with who decides, accepted limitations and technical debt. Nothing undecided is written as fact elsewhere on the page.
+- **Risks, open questions and limitations** (h2). Known risks with their mitigation, questions not yet decided with who decides, accepted limitations and technical debt. Nothing undecided is written as fact elsewhere on the page.
 
-11. **Related** (h2, last). Links to the repository README (implementation detail), runbooks, ADRs, dashboards, tickets.
+- **Related** (h2, last). Links to the repository README (implementation detail), runbooks, ADRs, dashboards, tickets.
 
 ## Add when they apply
 

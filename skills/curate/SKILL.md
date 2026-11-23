@@ -26,7 +26,7 @@ Merge candidate lessons from `docs/_inbox.md` into the topic docs. The user conf
 ## 2. Prepare
 
 - If a remote exists and the tree is clean: `git -C ROOT pull --rebase`. On a conflict stop, show it and leave the inbox as it is (`.processing` is picked up next run).
-- Checkpoint commit of the user's own uncommitted edits to CLAUDE.md and `docs/` (skip when `git -C ROOT diff --quiet HEAD -- CLAUDE.md docs` shows nothing; never abort on "nothing to commit"): `git -C ROOT add CLAUDE.md docs` then `git -C ROOT commit -m "Checkpoint before curate"`. This keeps the curate commit to curate's own changes, so undo by revert is clean. The pull and the checkpoint are the only writes before the user confirms.
+- Checkpoint commit of the user's own uncommitted edits to CLAUDE.md and `docs/` (skip when `git -C ROOT diff --quiet HEAD -- CLAUDE.md docs` shows nothing; never abort on "nothing to commit"): `git -C ROOT add CLAUDE.md docs` then `git -C ROOT commit -m "Checkpoint before curate" -- CLAUDE.md docs` (the pathspec keeps any other staged work in the clone out of the commit). This keeps the curate commit to curate's own changes, so undo by revert is clean. The pull and the checkpoint are the only writes before the user confirms.
 
 ## 3. Promotion gate (the only definition of the gate)
 
@@ -50,7 +50,7 @@ Entries that fail are listed with the failing criterion and discarded. No repeti
 ## 5. Confirm, write, finish
 
 - Show: the diff, the promoted entries and where they went, the rejected entries with reasons.
-- Write only after the user confirms. Then `git -C ROOT add CLAUDE.md docs` and commit (`git -C ROOT commit -m "Curate lessons"`, no co-author or generated-with lines) and delete `ROOT/docs/_inbox.processing`.
+- Write only after the user confirms. Then `git -C ROOT add CLAUDE.md docs` and commit (`git -C ROOT commit -m "Curate lessons" -- CLAUDE.md docs`, no co-author or generated-with lines) and delete `ROOT/docs/_inbox.processing`.
 - Ask "push now?" and push only on yes.
 
 ## Undo

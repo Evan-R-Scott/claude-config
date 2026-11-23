@@ -8,13 +8,13 @@ disable-model-invocation: true
 
 Used by `doc-design`, `doc-runbook` and any other `doc-*` skill after the content is drafted. The content structure is the same for every destination; only the rendering and the publishing differ.
 
-## 1. Draft in Markdown, whatever the destination
+## 1. Draft in Markdown for a new document
 
-Write the draft as plain Markdown first. It is the working format the user reviews, and it converts to either destination without losing structure. Use the mapping in section 3. The draft is restyled to the destination's convention (heading style, front matter, lint rules found in step 3.1) when it is rendered, so keep it plain.
+Write the draft as plain Markdown first. It is the working format the user reviews, and a new document converts to either destination without losing structure (an existing Confluence page with macros is the exception: see section 4). Use the mapping in section 3. The draft is restyled to the destination's convention (heading style, front matter, lint rules found in step 3.1) when it is rendered, so keep it plain.
 
 ## 2. Choose the destination
 
-- The user said where (a Confluence URL or page id, "Confluence", a file or `docs/` path, "in the repo"): use that.
+- The user said where (a Confluence URL or page id, "Confluence", a file or `docs/` path, "in the repo"): use that. An explicit link or path in the request wins over the repo's layout.
 - Otherwise: a Confluence link or page in the conversation means Confluence; being inside a git repo with a `docs/` folder or a README-based doc convention means a Markdown file.
 - Still unclear: ask once, "Confluence page or a Markdown file in this repo?" Do not publish to either without that answer.
 - The same document in both places only when asked; the repo file is then the source and the Confluence page a copy, say so on the page.

@@ -19,7 +19,7 @@ One or more files or folders. Optionally `--base-dir <dir>`: a checkout onto whi
 ## Collect
 
 - Expand each path: a file is reviewed whole; a folder is walked (skip `.git`, `.svn`, `node_modules`, `.venv`, build output, binaries, and generated files; say what you skipped).
-- A `.patch` or `.diff` file (or a diff pasted into the conversation, which the caller saves to a file first) is a change set: read the patch itself. If a checkout is named too (`--base-dir <dir>`), copy it to the execution copy (`rsync -a --copy-unsafe-links --exclude=.git`) and apply the patch there (`git apply --check`, then `git apply`) so the changed files can be read and tested whole; otherwise say it was not applied and nothing was run.
+- A `.patch` or `.diff` file (or a diff pasted into the conversation, which the caller saves to a file first) is a change set: read the patch itself. If a checkout is named too (`--base-dir <dir>`), copy it to `<RUN>/base/` (`rsync -a --copy-unsafe-links --exclude=.git --exclude=node_modules --exclude=.venv <base-dir>/ <RUN>/base/`, a separate directory from `<RUN>/tree/` where the patch file itself goes) and apply the patch there (`git apply --check`, then `git apply`) so the changed files can be read and tested whole; otherwise say it was not applied and nothing was run.
 - Infer what each file is for from its content, its neighbors and any README. State the inferred purpose in the Summary. You cannot ask.
 
 ## Trust and run directory

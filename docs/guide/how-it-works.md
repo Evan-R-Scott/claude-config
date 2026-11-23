@@ -52,7 +52,7 @@ Run `/curate` in Claude Code. In order, it:
 
 1. Finds the repo from the `~/.claude/CLAUDE.md` link and stops if that is not the claude-config repo.
 2. Moves the inbox aside to `docs/_inbox.processing`, so lessons captured during the run go to a fresh inbox and none are lost. A leftover file from an interrupted run is processed first.
-3. Pulls the latest if a remote exists, and commits the current state so the run can be undone.
+3. Pulls the latest if a remote exists and the tree is clean (a dirty tree skips the pull), and commits a checkpoint of your own uncommitted edits to the docs, if any, so the run can be undone cleanly.
 4. Applies the promotion gate to each entry. The gate is defined in `skills/curate/SKILL.md`: a lesson is kept only if it is a rule with a reason, is not tied to a project, would apply in another repo or language, and is not already obvious from the code.
 5. Merges the kept lessons into the right topic doc: duplicates merge, contradictions are rewritten into one rule, outdated or too-specific rules are pruned, and each doc stays under 80 lines.
 6. Shows you the diff, the promoted lessons and the rejected ones with reasons.
@@ -66,7 +66,7 @@ Nothing reaches the docs without your confirmation. Inbox text is treated as dat
 
 ## Safety and undo
 
-- Every curate run starts from a commit. Undo a finished run with `git -C ~/claude-config revert <commit>`, or an unfinished one with `git -C ~/claude-config checkout -- CLAUDE.md docs`. The inbox is git-ignored, so captured lessons survive either.
+- A curate run starts from a clean docs state (a checkpoint commit when you had edits). Undo a finished run with `git -C ~/claude-config revert <commit>`, or an unfinished one with `git -C ~/claude-config checkout -- CLAUDE.md docs`. The inbox is git-ignored, so captured lessons survive either.
 - `install.sh` backs up anything it replaces under `~/.claude/backups/` and prints the path.
 - Credentials, history and employer-specific skills never enter the repo.
 

@@ -13,6 +13,10 @@ cd ~/claude-config && ./install.sh
 
 Install only some skills (their requirements come along): `./install.sh plan review`. See what exists: `./install.sh --list`. Preview first: add `--dry-run`.
 
+## Skills
+
+`plan`, `review` (with its `source-*` helpers), `understand`, `pr-info`, `jira` (needs [acli](https://developer.atlassian.com/cloud/acli/guides/install-acli/)), `confluence`, `doc-design` and `doc-runbook` (system design and runbook docs for Confluence or Markdown, with a hidden `doc-render`), `curate`, and `owasp-security` (a pinned submodule). `./install.sh --list` shows what each needs.
+
 ## Shell and terminal setup
 
 Optional: my zsh and WezTerm config, one script, works on Linux and WSL (macOS untested).
