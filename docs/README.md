@@ -30,7 +30,7 @@ Pending lessons: `cat ~/claude-config/docs/_inbox.md` (local to each laptop, not
 
 `owasp-security` comes from [agamm/claude-code-owasp](https://github.com/agamm/claude-code-owasp) as a git submodule (`vendor/`), pinned to a reviewed commit. Nothing changes in anyone's Claude sessions until they update.
 
-- A clone made without `--recurse-submodules` still gets it: `./install.sh` fetches missing submodules.
+- A plain `git clone` is enough: `./install.sh` fetches the submodules itself.
 - Anyone can pull the latest with `./install.sh --update`. It moves only the vendored skills to their upstream tip and prints what changed. Skim it: it is third-party text that Claude will follow.
 - If you maintain this repo, commit the new pointer afterwards (`git add vendor && git commit`), so everyone else gets it with a normal `git pull` plus `git submodule update`.
 

@@ -14,7 +14,7 @@ My portable Claude Code setup: global instructions, on-demand docs, generic skil
 
 Needs `git` and `python3`. Linux and WSL are tested, macOS is untested.
 
-1. Clone: `git clone --recurse-submodules https://github.com/Evan-R-Scott/claude-config.git ~/claude-config`
+1. Clone: `git clone https://github.com/Evan-R-Scott/claude-config.git ~/claude-config`
 2. Install the Claude Code setup: `cd ~/claude-config && ./install.sh` (only some skills: `./install.sh plan review`, their requirements come along)
 3. Optional, shell and terminal: `./install-dotfiles.sh`
 
