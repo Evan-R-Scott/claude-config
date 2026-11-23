@@ -30,7 +30,7 @@ Write plain POSIX sh (the shell may be zsh: no zsh-only or bash-only expansions)
 p=~/.atlassian/confluence.properties
 get(){ [ -f "$p" ] && grep -E "^$1=" "$p" | head -1 | cut -d= -f2-; }
 S=${ATLASSIAN_SITE:-$(get server)}; S=${S%/}; S=${S%/wiki}; case $S in http*) ;; *) S=https://$S;; esac
-SCRATCH="${SCRATCH:-/tmp/confluence-$USER}"; mkdir -p "$SCRATCH"   # if the system prompt lists a scratchpad directory, set SCRATCH to it first
+SCRATCH="${SCRATCH:-/tmp/confluence-$USER}"; mkdir -p "$SCRATCH" && chmod 700 "$SCRATCH"   # if the system prompt lists a scratchpad directory, set SCRATCH to it first
 [ -f "$p" ] && [ "$(stat -c %a "$p")" != 600 ] && echo "warning: $p is not mode 600, run chmod 600 on it" >&2
 cf(){ printf 'user = "%s:%s"\n' "${ATLASSIAN_EMAIL:-$(get user)}" "${ATLASSIAN_API_TOKEN:-$(get password)}" | curl -sS -K - -H 'Accept: application/json' -w '\nHTTP_STATUS:%{http_code}\n' "$@"; }
 ```
