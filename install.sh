@@ -21,7 +21,7 @@ for a in "$@"; do
     --dry-run) DRY=1 ;;
     --list) LIST=1 ;;
     --update) UPDATE=1 ;;
-    -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
+    -h|--help) awk 'NR == 1 { next } /^#/ { print; next } { exit }' "$0"; exit 0 ;;
     -*) echo "unknown option: $a" >&2; exit 2 ;;
     *) NAMES="$NAMES $a" ;;
   esac
