@@ -2,42 +2,36 @@
 
 My portable Claude Code setup: global instructions, on-demand docs, generic skills, and a loop that turns lessons from sessions into those docs.
 
+## What is in it
+
+| Part | What it is | Install | Options |
+|---|---|---|---|
+| Claude Code setup | Global instructions, docs, skills, shared settings | `./install.sh` | `./install.sh --help` |
+| Skills | Plan, review, PR, Jira, Confluence and doc-writing skills | included above | `./install.sh --list` shows each skill, what it does and what it needs |
+| Shell and terminal | zsh and WezTerm config (optional) | `./install-dotfiles.sh` | `./install-dotfiles.sh --help` |
+
 ## Quick start
 
-Needs `git` and `python3`.
+Needs `git` and `python3`. Linux and WSL are tested, macOS is untested.
 
-```
-git clone --recurse-submodules https://github.com/Evan-R-Scott/claude-config.git ~/claude-config
-cd ~/claude-config && ./install.sh
-```
+1. Clone: `git clone --recurse-submodules https://github.com/Evan-R-Scott/claude-config.git ~/claude-config`
+2. Install the Claude Code setup: `cd ~/claude-config && ./install.sh` (only some skills: `./install.sh plan review`, their requirements come along)
+3. Optional, shell and terminal: `./install-dotfiles.sh`
 
-Install only some skills (their requirements come along): `./install.sh plan review`. See what exists: `./install.sh --list`. Preview first: add `--dry-run`.
-
-## Skills
-
-`./install.sh --list` shows every skill, what it does and what it needs. `./install.sh --help` shows all options.
-
-## Shell and terminal setup
-
-Optional: my zsh and WezTerm config, one script, works on Linux and WSL (macOS untested).
-
-```
-cd ~/claude-config && ./install-dotfiles.sh
-```
-
-Read [dotfiles/README.md](dotfiles/README.md) for what it does, how secrets are kept out and how to preview first.
+Both scripts take `--dry-run` to preview and change nothing.
 
 ## Keeping it up to date
 
 Claude captures lessons by itself. Only these are manual:
 
-1. **When a session starts with "N lessons pending, run /curate"**, run this in Claude Code (any folder): `/curate`
-   Read the diff it shows, confirm, and answer yes to "push now?".
-2. **On another laptop, to get the latest**: `git -C ~/claude-config pull` (re-run `./install.sh` only if new skills were added).
+| When | Do |
+|---|---|
+| A session starts with "N lessons pending, run /curate" | Run `/curate` in Claude Code, read the diff, confirm, answer yes to "push now?" |
+| On another laptop, to get the latest | `git -C ~/claude-config pull` (re-run `./install.sh` if new skills were added) |
+| You want the latest of a vendored skill (`owasp-security`) | `./install.sh --update`, then skim what it prints |
 
-3. **Vendored skills** (`owasp-security`, from [agamm/claude-code-owasp](https://github.com/agamm/claude-code-owasp)) are git submodules pinned to a reviewed commit. `./install.sh` fetches them if the clone skipped `--recurse-submodules`. Anyone who cloned this repo can pull the latest of that skill any time with `./install.sh --update` (it moves only the vendored skills to their upstream tip, and prints what changed: skim it, it is third-party text Claude will follow). If you maintain this repo, commit the new pointer afterwards (`git add vendor && git commit`) so everyone else gets it with a normal `git pull` plus `git submodule update`.
+## Learn more
 
-Review what is learned in `~/claude-config/docs/` (five short files, plus `CLAUDE.md`). Pending lessons wait in `~/claude-config/docs/_inbox.md`.
-
-Read [docs/guide/how-it-works.md](docs/guide/how-it-works.md) to understand how lessons are captured, curated and used.
-Read [docs/README.md](docs/README.md) for the full maintenance routine, undo steps and new-laptop setup.
+- [docs/guide/how-it-works.md](docs/guide/how-it-works.md): how lessons are captured, curated and used.
+- [docs/README.md](docs/README.md): the full maintenance routine, undo steps, new-laptop setup and vendored skills.
+- [dotfiles/README.md](dotfiles/README.md): what the shell setup does and how secrets are kept out.
