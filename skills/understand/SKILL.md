@@ -82,7 +82,7 @@ cat <ROOT>/CLAUDE.md
 If it exists, read it fully to understand:
 - What the repo does and its overall purpose
 - Directory structure and conventions
-- Key concepts, cluster names, terminology specific to this repo
+- Key concepts, names and terminology specific to this repo
 
 If no CLAUDE.md exists, do a quick structural scan to orient yourself:
 ```bash
@@ -95,8 +95,8 @@ Do not summarize the CLAUDE.md back to the user - just use it silently as contex
 ## Step 2: Locate each file
 
 For each filename the user provided, find it under the repo root. The user may provide:
-- A path relative to the repo root (e.g. `packages/node-exporter/node-exporter-daemonset.yaml`)
-- Just a filename with no path (e.g. `node-exporter-daemonset.yaml`)
+- A path relative to the repo root (e.g. `src/auth/session.py`)
+- Just a filename with no path (e.g. `session.py`)
 
 If a relative path was given, read it directly:
 ```
@@ -124,7 +124,7 @@ Structure each file's explanation as follows:
 - Explain WHY it exists - the motivation, the problem it solves, or the constraint it encodes
 - If a section connects to another file or concept in the repo, say so explicitly using the CLAUDE.md context you loaded
 
-Use plain language. Avoid jargon without defining it first. If a term (e.g. DaemonSet, ServiceMonitor, remote_write) is domain-specific, explain it briefly the first time it appears.
+Use plain language. Avoid jargon without defining it first. If a term (a framework concept, a protocol, an internal name) is domain-specific, explain it briefly the first time it appears.
 
 **Summary**: End each file with 2–3 sentences on how this file fits into the bigger picture - what breaks if it's missing, what it depends on, what depends on it.
 
@@ -133,5 +133,5 @@ Use plain language. Avoid jargon without defining it first. If a term (e.g. Daem
 - Go file by file. Do not merge explanations across files.
 - Do not just describe what lines say - explain the reasoning and context behind them.
 - If the file references another file in the repo that is highly relevant, mention it with a relative path link.
-- If the file is generated or templated (e.g. a Helm template), note that and explain what it renders into.
+- If the file is generated or templated (e.g. a template, a code generator's output, a build artifact), note that and explain what it renders into.
 - Keep a consistent tone: knowledgeable but approachable, like a senior engineer walking a new hire through the code.

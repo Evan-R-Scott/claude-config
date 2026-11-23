@@ -4,6 +4,7 @@
 #   ./install.sh plan review     only the named skills (and what they require); symlinks only
 #   ./install.sh --list          list skills and what they require
 #   ./install.sh --dry-run ...   print what would happen, change nothing
+#   ./install.sh --update        pull the latest of vendored skills (git submodules); nothing else changes
 # Needs: sh. The full install also needs python3 (settings merge).
 
 ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd -P) || exit 1
@@ -12,13 +13,15 @@ TS=$(date +%Y%m%d-%H%M%S)
 BK="$CLAUDE/backups/claude-config-$TS"
 DRY=0
 LIST=0
+UPDATE=0
 NAMES=""
 
 for a in "$@"; do
   case "$a" in
     --dry-run) DRY=1 ;;
     --list) LIST=1 ;;
-    -h|--help) sed -n '2,7p' "$0"; exit 0 ;;
+    --update) UPDATE=1 ;;
+    -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
     -*) echo "unknown option: $a" >&2; exit 2 ;;
     *) NAMES="$NAMES $a" ;;
   esac
@@ -51,6 +54,16 @@ if [ "$LIST" = 1 ]; then
       *) say "$s  requires: $req" ;;
     esac
   done
+  exit 0
+fi
+
+if [ "$UPDATE" = 1 ]; then
+  { [ -f "$ROOT/.gitmodules" ] && [ -e "$ROOT/.git" ]; } || die "no vendored skills to update (needs a git clone with .gitmodules)"
+  if [ "$DRY" = 1 ]; then say "would: git submodule update --init --remote"; exit 0; fi
+  git -C "$ROOT" submodule update --init --remote --merge || die "update failed (network, or local changes inside vendor/)"
+  git -C "$ROOT" submodule summary
+  say "vendored skills are up to date with their upstream. Skim what changed above: it is third-party text that Claude will follow."
+  say "If you maintain this repo, commit the new pointer: git -C $ROOT add vendor && git -C $ROOT commit"
   exit 0
 fi
 

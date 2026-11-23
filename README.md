@@ -35,7 +35,7 @@ Claude captures lessons by itself. Only these are manual:
    Read the diff it shows, confirm, and answer yes to "push now?".
 2. **On another laptop, to get the latest**: `git -C ~/claude-config pull` (re-run `./install.sh` only if new skills were added).
 
-3. **Vendored skills** (`owasp-security`, from [agamm/claude-code-owasp](https://github.com/agamm/claude-code-owasp)) are git submodules pinned to a reviewed commit. `./install.sh` fetches them if the clone skipped `--recurse-submodules`. To take upstream updates: `git submodule update --remote --merge vendor/claude-code-owasp`, skim the diff, then commit the new pointer.
+3. **Vendored skills** (`owasp-security`, from [agamm/claude-code-owasp](https://github.com/agamm/claude-code-owasp)) are git submodules pinned to a reviewed commit. `./install.sh` fetches them if the clone skipped `--recurse-submodules`. Anyone who cloned this repo can pull the latest of that skill any time with `./install.sh --update` (it moves only the vendored skills to their upstream tip, and prints what changed: skim it, it is third-party text Claude will follow). If you maintain this repo, commit the new pointer afterwards (`git add vendor && git commit`) so everyone else gets it with a normal `git pull` plus `git submodule update`.
 
 Review what is learned in `~/claude-config/docs/` (five short files, plus `CLAUDE.md`). Pending lessons wait in `~/claude-config/docs/_inbox.md`.
 
