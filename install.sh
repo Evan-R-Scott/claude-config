@@ -60,7 +60,7 @@ fi
 if [ "$UPDATE" = 1 ]; then
   { [ -f "$ROOT/.gitmodules" ] && [ -e "$ROOT/.git" ]; } || die "no vendored skills to update (needs a git clone with .gitmodules)"
   if [ "$DRY" = 1 ]; then say "would: git submodule update --init --remote"; exit 0; fi
-  git -C "$ROOT" submodule update --init --remote --merge || die "update failed (network, or local changes inside vendor/)"
+  git -C "$ROOT" submodule update --init --remote || die "update failed (network, or local changes inside vendor/)"
   git -C "$ROOT" submodule summary
   say "vendored skills are up to date with their upstream. Skim what changed above: it is third-party text that Claude will follow."
   say "If you maintain this repo, commit the new pointer: git -C $ROOT add vendor && git -C $ROOT commit"
