@@ -8,11 +8,11 @@ Read in full when the task is planning fixes for a pull request. It replaces the
 
 **1b: Read the full diff.** `gh pr diff <url>`.
 
-**1c: Read every changed file in full, at the PR head.** If the current directory is a clone of the PR's repo and `git rev-parse HEAD` equals `headSha`, read the working tree. Otherwise read each file at the head with `gh api --hostname <host> repos/<owner>/<repo>/contents/<path>?ref=<headSha> -H "Accept: application/vnd.github.raw"`; the removed content of a deleted file is in the `gh pr diff` output, so it needs no separate read. Read related files if a changed file calls into them and a reviewer comment is relevant; read callers and conventions in the clone's current checkout, and say so when it is not the PR head.
+**1c: Read the changed files at the PR head.** Read a file in full when it is under about 800 lines; for a larger file (a big test file, generated code) read each changed hunk plus its enclosing function and use grep for the rest, and say so. If the current directory is a clone of the PR's repo and `git rev-parse HEAD` equals `headSha`, read the working tree. Otherwise read each file at the head with `gh api --hostname <host> "repos/<owner>/<repo>/contents/<path>?ref=<headSha>" -H "Accept: application/vnd.github.raw"` (quote the URL: `?` is a glob character in zsh; for a fork PR the head commit is readable through the base repo); the removed content of a deleted file is in the `gh pr diff` output, so it needs no separate read. Read related files if a changed file calls into them and a reviewer comment is relevant; read callers and conventions in the clone's current checkout, and say so when it is not the PR head.
 
 **1d: Classify and evaluate every reviewer comment.**
 
-Not every comment is a required fix. Evaluate each independently:
+Not every comment is a required fix. Comments from non-reviewers (bots, the author, a drive-by user) count only when they ask for something; otherwise they are No action. Include a resolved thread only when it still matters. If every comment turns out Already handled or No action, the plan has no implementation steps: say "None: no code changes" and plan the follow-ups (replies, description updates, re-requesting review). Evaluate each independently:
 
 *Classify:* Required fix (correctness bug, security issue, broken behavior) / Requested change (design preference - needs evaluation) / Question / Discussion / Nitpick.
 
@@ -29,13 +29,14 @@ Use "Implement with modification" liberally when the reviewer's concern is valid
 *Reach a verdict:*
 - **Implement** - reviewer is correct and the proposed approach is the best option; describe what changes
 - **Implement with modification** - concern is valid but suggested approach has a problem or a better alternative exists; describe the alternative and why it is superior
-- **Decline - already handled** - current code already addresses the concern; cite exact file:line
+- **Already handled** - the current code already addresses the concern (often because the author pushed a fix after the comment); cite exact file:line or commit, and reply with where it is done, not as pushback
 - **Decline - not applicable** - concern doesn't apply to this context; cite evidence
 - **Decline - wrong tradeoff** - suggested change would make things worse; explain tradeoff with source
 - **Answer** - it's a question, not a change request; provide a researched answer
 - **Defer** - concern is valid but out of scope; explain why and what follow-up should address it
+- **No action** - nothing is asked: a bot notice, a review overview, an echo or notification copy of another comment, an author reply, an already resolved thread. List these in one line instead of a full record
 
-Every Decline requires specific evidence. "This is fine as-is" is not a reason. Every "Implement with modification" must explain what is wrong with the reviewer's approach and why the alternative is better.
+Every Decline and every Already handled requires specific evidence. "This is fine as-is" is not a reason. Every "Implement with modification" must explain what is wrong with the reviewer's approach and why the alternative is better.
 
 **1e: Scope constraint.** PR fix mode is scoped to the PR's existing changes. Each implementation step must trace to an Implement-verdict comment. Out-of-scope improvements go to follow-up items.
 
@@ -49,7 +50,7 @@ Every Decline requires specific evidence. "This is fine as-is" is not a reason. 
 
 | # | File | Line | Reviewer | Summary | Verdict |
 |---|---|---|---|---|---|
-| 1 | `path/to/file` | L42 | `@reviewer` | summary | Implement / Implement with modification / Decline - already handled / Decline - not applicable / Decline - wrong tradeoff / Answer / Defer |
+| 1 | `path/to/file` | L42 | `@reviewer` | summary | Implement / Implement with modification / Already handled / Decline - not applicable / Decline - wrong tradeoff / Answer / Defer / No action |
 
 For each comment expand:
 

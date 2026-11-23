@@ -21,7 +21,7 @@ Accept, in this order:
 - `<owner>/<repo>#<n>`: host is `github.com` unless `GH_HOST` is set. `gh pr view` does not accept this form, so build `<url>` = `https://<host>/<owner>/<repo>/pull/<n>`.
 - `<n>` alone: take host/owner/repo from `gh repo view --json url --jq .url` in the current directory (if that fails or the clone has several remotes and it is unclear which is the PR's repo, say a URL is needed and stop), then build `<url>` the same way.
 
-Use `<url>` for every `gh pr` call and `--hostname <host>` for every `gh api` call. Never hardcode a host, org or repo.
+Use `<url>` for every `gh pr` call and `--hostname <host>` for every `gh api` call. Never hardcode a host, org or repo. The checkout step (3) applies to every form above, and only runs inside a clone of the PR's repo.
 
 ## 2. Fetch (run both in parallel; the `--jq` filters trim the output, which still enters the conversation)
 
@@ -40,15 +40,15 @@ The first call also returns the top-level conversation comments (they often hold
 - Other links (docs, Confluence, design pages): list them, and fetch only when the user asks or one is clearly the spec.
 - Images and files embedded in the description or comments: list their URLs and fetch only when asked (GitHub attachment URLs need auth, use `gh api` or `curl` with `gh auth token` only on explicit request).
 
-If either call fails (auth, 404, rate limit, no access), show the raw error and stop. CI `r` values: SUCCESS/FAILURE/PENDING/etc.; summarize as counts and name the failing checks.
+If either call fails (auth, 404, rate limit, no access), show the raw error and stop. If an output is cut off by the tool limit, run the call again redirecting to a file under the scratchpad and read it in parts with `python3 -I` (`jq` may not be installed). Empty GraphQL output means the PR has no review threads. CI `r` values: SUCCESS/FAILURE/PENDING/etc.; summarize as counts and name the failing checks; an empty `ci` list means no checks are reported (say that, not "CI not run"); an empty `decision` means no review decision yet.
 
 ## 3. Check out the branch (skip with `--no-checkout`, or when the PR is MERGED or CLOSED)
 
 Only touch the current directory when it is a clone of this PR's repo:
 
 1. `git remote -v` must show the PR's repo on some remote: `https://<host>/<owner>/<repo>`, `git@<host>:<owner>/<repo>` or `ssh://git@<host>/<owner>/<repo>`, with or without `.git`, compared case-insensitively. If the PR comes from a fork, the clone of the **base** repo is the right one. If no match: report "current directory is not a clone of `<owner>/<repo>`, no checkout done" and go on to the summary.
-2. `git status --porcelain` must be empty. If not, report the dirty files and stop before any checkout. Never stash, reset, discard or force anything.
-3. `gh pr checkout <n> --repo <host>/<owner>/<repo>` (fork PRs and renamed branches are handled by `gh`; the run adds the fork remote when needed). If it fails, show the exact error and stop.
+2. `git status --porcelain` must print nothing (untracked files count: `gh` itself would not stop, this rule does). If not, report the dirty files and stop before any checkout. Never stash, reset, discard or force anything.
+3. `gh pr checkout <n> --repo <host>/<owner>/<repo> --branch pr-<n>`. The explicit local name avoids a collision when a fork's branch is called `master` or `main`. `gh` fetches the PR head into that branch and does not add a remote for a fork, so pushing a fix to a fork PR needs extra setup (see `maintainerCanModify` in `gh pr view --json`): say so instead of assuming a push target. If it fails, show the exact error and stop.
 4. Report `git branch --show-current` and `git log -1 --oneline`. Skip `git pull`: `gh pr checkout` already fetched the latest head.
 
 If already on the PR branch, `gh pr checkout` just updates it; that is fine.
