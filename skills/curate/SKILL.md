@@ -32,7 +32,8 @@ Merge candidate lessons from `docs/_inbox.md` into the topic docs. The user conf
 
 Promote an entry only if ALL hold:
 - It states a rule and its reason.
-- It names no project, repo, host, ticket, user or path.
+- It names no project, repo, host, ticket, user or path (a general tool or platform name such as git or macOS is fine).
+- It is not already covered by an existing rule: if it is, merge it into that rule once or drop it, never add a second copy.
 - It would apply in a different repo or language.
 - It is not recoverable from reading code or git history.
 
@@ -50,7 +51,7 @@ Entries that fail are listed with the failing criterion and discarded. No repeti
 ## 5. Confirm, write, finish
 
 - Show: the diff, the promoted entries and where they went, the rejected entries with reasons.
-- Write only after the user confirms. Then `git -C ROOT add CLAUDE.md docs` and, only if `git -C ROOT status --porcelain -- CLAUDE.md docs` shows changes, commit (`git -C ROOT commit -m "Curate lessons" -- CLAUDE.md docs`, no co-author or generated-with lines) and delete `ROOT/docs/_inbox.processing`.
+- Show the diff, then write only after the user confirms. If nobody can confirm (a non-interactive run), stop after showing the diff: write nothing and leave `_inbox.processing` for the next run. Then `git -C ROOT add CLAUDE.md docs` and, only if `git -C ROOT status --porcelain -- CLAUDE.md docs` shows changes, commit (`git -C ROOT commit -m "Curate lessons" -- CLAUDE.md docs`, no co-author or generated-with lines) and delete `ROOT/docs/_inbox.processing`.
 - Ask "push now?" and push only on yes.
 
 ## Undo

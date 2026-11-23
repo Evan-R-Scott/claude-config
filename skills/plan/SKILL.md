@@ -39,10 +39,10 @@ Signals: PR URL/number/title in session, reviewer comments or `CHANGES_REQUESTED
 
 Extract: what needs to be built/changed/fixed, why, which repos/services are in play, constraints (deadlines, compatibility, things that must not change). Then adapt to the kind of task:
 
-- **New feature:** foundational pieces first, then the layers that depend on them.
+- **New feature:** define the interface first (flags, API, schema), how it interacts with existing options, and compatibility; then foundational pieces, then the layers that depend on them.
 - **Refactor:** behavior must stay identical. Capture a baseline of current behavior first (the existing tests, or a snapshot of the affected outputs to diff), change in small steps that each keep the baseline passing, and say how each step is verified.
 - **Bug fix without a PR:** reproduce first, find the root cause (use `~/.claude/docs/debugging.md` if it exists), then plan the fix and a regression test.
-- **Infrastructure or configuration change:** blast radius, a dry run (plan or diff) before applying, a staged rollout, and rollback as a first-class step.
+- **Infrastructure or configuration change:** blast radius; a dry run (the tool's plan or diff output, or the change running in a PR); a staged rollout with the gate that decides each stage; capturing the live state first as the baseline; and rollback as a first-class step that covers state outside the repo (a git revert does not undo it). State the repo cannot show (branch protection, cloud resources, external apps) is "not verifiable from the repo": list it under Open Questions and in the baseline. For a data migration add expand-then-contract ordering, a backup you have tested, and the point of no return.
 
 ---
 
@@ -59,6 +59,8 @@ Read `CLAUDE.md` or `AGENTS.md` at the repo root (follow any triggers relevant t
 ---
 
 ## Step 3: Read the codebase
+
+First check the premise: does what the task asks for already exist, and is the reported symptom real? If the premise is wrong or partly wrong, say so before planning (a plan to add what is already there is waste).
 
 For more than about five files, delegate the sweep to an Explore subagent (breadth "medium") and keep only its conclusions in this session; read the few decisive files yourself. Read every file relevant to the task. In a small codebase start at the entry point, then grep for callers and for docs that mention the feature. Understand the current architecture, the patterns in use, what already exists that might be reused or extended, and what the task will touch or interact with. For net-new work: understand the system well enough to design something that fits. For PR fix work: 1c covered the changed files; still read their callers and the conventions around them.
 
@@ -88,8 +90,9 @@ Always present: Summary, Implementation Steps, Testing and Validation, Documenta
 - **Implementation Steps:** atomic, reversible where possible, specific (exact files, functions, values), foundational pieces first. Each step: repo and files, purpose (why it sits at this point in the order), the exact change (snippets or pseudocode where non-obvious), and a revert note only when it is not a plain git revert.
 - **Testing and Validation:** a baseline to diff against (the current suite results; with no suite, capture the current behavior of the affected commands to a file and diff it after), a check per step (what to run, the concrete expected outcome), and one end-to-end check per user-visible behavior including a failure or edge case and a regression check against the baseline. With no code changes there is nothing to test: say so.
 - **Documentation Changes:** the files to create, update or delete and what changes in each. A CLAUDE.md or AGENTS.md trigger entry only when the repo uses trigger-style files.
-- **Optional, only when they add information:** Context and Current State; Design Decisions with alternatives; for a non-trivial change a component diagram, correctness design (invalid inputs, partial failures, concurrency) and scalability design; Prerequisites (dependencies, config, required state, approvals); a Rollback procedure (only when the change is not a clean git revert: data, config, infrastructure, migrations); Sources (decision, link, what it contributed, or "none needed"); Open Questions (question, impact, options).
+- **Optional, only when they add information:** Context and Current State; Design Decisions with alternatives; for a non-trivial change a component diagram, correctness design (invalid inputs, partial failures, concurrency) and scalability design; Prerequisites (dependencies, config, required state, approvals); a Rollback procedure (only when the change is not a clean git revert: data, config, infrastructure, external state, migrations); Sources (decision, link, what it contributed, or "none needed"); Open Questions (question, impact, options).
 - In PR fix mode do not repeat in Context or Design Decisions what the per-comment records already say.
+- If you cannot run or check something the plan depends on (no toolchain, no access, state outside the repo), say so in the plan, mark the affected steps "unverified", and make getting that access a prerequisite: do not block and do not pretend it was checked.
 
 ---
 
