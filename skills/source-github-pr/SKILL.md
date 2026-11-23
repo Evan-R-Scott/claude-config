@@ -40,6 +40,10 @@ gh api --paginate repos/<owner>/<repo>/pulls/<number>/comments
 
 Each has: `id`, `path`, `line`/`original_line`, `body`, `user.login`, `diff_hunk`.
 
+## Light path (small pull requests where nothing will run)
+
+Use it when the target is untrusted (none of its code will run) or the change set has no executable code, and the pull request changes at most 15 files and about 500 lines. Skip the scratch clone, the exported trees and their verification. Read each changed file at the head with `gh api --hostname <host> "repos/<owner>/<repo>/contents/<path>?ref=<headRefOid>" -H "Accept: application/vnd.github.raw"` (the base version the same way with `<base-sha>` when you need it), write the files a safe tool needs (ruff, shellcheck, the `ast.parse` syntax check) into `<RUN>/tree/<path>` under the run directory, and say "light path" in the report's Verification Results. A trusted target whose checks must run, or a bigger change, uses the scratch clone below. Cleanup is unchanged: remove `<RUN>` at the end.
+
 ## Collect: the scratch clone
 
 Make one run directory with `mktemp -d <scratchpad>/review-XXXXXX` (or plain `mktemp -d` if the system prompt lists no scratchpad directory), call it `RUN`, and name it in the report. Never use the scratchpad directory itself as `RUN`, because the cleanup removes `RUN`. Do not use `--filter=blob:none`: exporting from a lazy clone fetches every blob in its own round trip and takes minutes. Then:
@@ -56,10 +60,9 @@ git -C <RUN>/repo rev-parse FETCH_HEAD
 
 ```bash
 gh pr diff <url>
-gh pr view <url> --json commits
 ```
 
-`gh pr diff` works for open, closed and merged pull requests. If it fails on a very large pull request (HTTP 406), use `git -C <RUN>/repo diff <base-sha>...<headRefOid>`. Note the commits reviewed.
+`gh pr diff` works for open, closed and merged pull requests. If it fails on a very large pull request (HTTP 406), use `git -C <RUN>/repo diff <base-sha>...<headRefOid>`. Note the commits reviewed (the `commits` field of the metadata call already has them).
 
 ## Collect: CI and earlier rounds
 

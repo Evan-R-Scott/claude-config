@@ -24,7 +24,7 @@ Identify every doc file that needs to be created, updated, or deleted - whether 
 
 ## Checklist marks (used in every checklist)
 
-Checklist marks never count toward INCOMPLETE; only the triggers in the Verdict section do. Mark each: **Verified** (with the command or tool output) / **Finding** (with a reference to it) / **Not verified** / **N/A** (with the reason, when the item does not apply). Reading alone is never Verified; never mark "looks good" without evidence.
+Checklist marks never count toward INCOMPLETE; only the triggers in the Verdict section do. For a small change (about 20 changed lines or fewer) write the checklist grouped by mark, one line per mark (Verified: items with their evidence; Finding: items with the finding; Not verified; N/A with the reason), every item still named. Mark each: **Verified** (with the command or tool output) / **Finding** (with a reference to it) / **Not verified** / **N/A** (with the reason, when the item does not apply). Reading alone is never Verified; never mark "looks good" without evidence.
 
 ## INCOMPLETE rules (the one definition, for every template's Verdict)
 
