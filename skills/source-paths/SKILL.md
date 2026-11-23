@@ -28,7 +28,7 @@ Make one run directory with `mktemp -d <scratchpad>/review-XXXXXX` (or plain `mk
 
 ## Read
 
-Read each file directly. If the paths are inside a git or svn working copy, still review the files as they are; use the history only for context (`git --no-optional-locks log -5 -- <path>`).
+Read each file directly. If the paths are inside a git or svn working copy, still review the files as they are; use the history only for context (`git --no-optional-locks -C <the path's directory> log -5 -- <path>`).
 
 ## Execution copy
 

@@ -26,13 +26,15 @@ Shared by `confluence` and the page-type skills (`doc-design`, `doc-runbook`). E
 <ac:structured-macro ac:name="warning"><ac:parameter ac:name="containerLevel">panel_c1</ac:parameter><ac:rich-text-body><p><strong>TITLE</strong></p><p>THE EDGE CASE AND WHAT HAPPENS.</p></ac:rich-text-body></ac:structured-macro>
 ```
 
-## Tip and success panels (runbooks)
+## Tip panel (runbooks)
 
 ```xml
 <ac:structured-macro ac:name="tip"><ac:parameter ac:name="containerLevel">panel_c1</ac:parameter><ac:rich-text-body><p><strong>TITLE</strong></p><p>TEXT</p></ac:rich-text-body></ac:structured-macro>
 ```
 
 ## Numbered procedure step with command and expected result
+
+Put a warning panel for a destructive step inside the list item it precedes, not between items: a panel between items can restart the numbering (and in Markdown an alert between items splits the list; indent it inside the item).
 
 ```xml
 <ol><li><p><strong>Do the thing.</strong> One sentence on why.</p><ac:structured-macro ac:name="code"><ac:parameter ac:name="language">bash</ac:parameter><ac:plain-text-body><![CDATA[COMMAND]]></ac:plain-text-body></ac:structured-macro><p>Expected: WHAT YOU SEE WHEN IT WORKED.</p></li></ol>

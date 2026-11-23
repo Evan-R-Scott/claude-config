@@ -43,5 +43,5 @@ Order is fixed. Sections marked (optional) are dropped when empty. Short section
 - A reader should be able to do the task using only bold actions, code blocks and "Expected" lines.
 - No background or history beyond Purpose and context; link out. No step that needs judgment without a stated criterion.
 - State values that drift (hostnames, versions, limits) once; mark anything environment specific. Prefer a link to the source of truth over a copy.
-- Leave out: unverified commands, secrets, advice for cases the owner has not seen.
+- Leave out: commands with no source at all (a command taken from the repo or the tool's own help but not run stays, tagged "(inferred, not run)"), secrets, advice for cases the owner has not seen.
 - A runbook is only as good as its last test: record how it was tested, walk it through once with someone who has not used it, and fix the page where they hesitate.

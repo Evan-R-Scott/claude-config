@@ -32,5 +32,5 @@ Do not use it, and do not suggest it, for any other document: runbooks, playbook
 - Plain, concise, accurate; written for a new reader; define terms once. No filler, no implementation trivia (leave that to the repo README, and link to it), no claims you have not checked against the code or the user.
 - Regular hyphens only, never em dashes.
 - State decisions with their reason, name the alternatives rejected, and state non-goals explicitly. Describe failure behavior as design, not as an afterthought.
-- Set the owner, status and review date; they are what keeps the page trustworthy. Link to the source of truth for anything that drifts.
+- Set the owner, status and review state (a date only when someone actually reviewed it); they are what keeps the page trustworthy. Link to the source of truth for anything that drifts.
 - Never change an existing page's meaning while restructuring it: when unsure whether a statement is still true, ask.
