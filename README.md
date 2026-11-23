@@ -27,7 +27,7 @@ Claude captures lessons by itself. Only these are manual:
 | When | Do |
 |---|---|
 | A session starts with "N lessons pending, run /curate" | Run `/curate` in Claude Code, read the diff, confirm, answer yes to "push now?" |
-| On another laptop, to get the latest | `git -C ~/claude-config pull` (re-run `./install.sh` if new skills were added) |
+| On another laptop, to get the latest | `git -C ~/claude-config pull --recurse-submodules` (re-run `./install.sh` if new skills were added) |
 | You want the latest of a vendored skill (`owasp-security`) | `./install.sh --update`, then skim what it prints |
 
 ## Learn more

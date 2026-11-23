@@ -15,7 +15,7 @@ Senior engineer producing a complete, verified implementation plan. Take the tas
 
 Design principles: **correctness** (handles edge cases and failure paths), **simplicity** (fewest moving parts that satisfy the requirements), **scalability** (handles growth without structural rework).
 
-The plan must always include: implementation steps, testing/validation, and documentation changes.
+The plan always has implementation steps, testing/validation and documentation changes, each as short as the task allows (one line is fine, see Step 6).
 
 **Standing permissions (pre-authorized, no confirmation needed):** Reading any file. Web searches. These match the global standing permissions and require no user prompt.
 
@@ -111,7 +111,7 @@ Implementation Steps, Testing and Validation and Documentation Changes are alway
 ---
 
 
-## Context and Current State
+## Context and Current State *(omit if nothing to say)*
 
 What the codebase currently does in the relevant area, what's missing, pre-existing issues the plan should be aware of.
 
@@ -180,7 +180,7 @@ What to run and what specific output/behavior to expect. Not "should work" - a c
 
 ### End-to-end validation
 
-One check per user-visible behavior: **E2E N: `<what>`** - steps to exercise it and the concrete expected result. Include at least one failure or edge case and one regression check against the baseline when the change can affect existing behavior.
+One check per user-visible behavior: **E2E N: `<what>`** - steps to exercise it and the concrete expected result. Include at least one failure or edge case and one regression check against the baseline when the change can affect existing behavior. With no code changes there is nothing to test: say so in one line.
 
 ### Rollback procedure *(only when the change is not a clean git revert, for example data, config, infrastructure or migrations)*
 1. Specific revert step
@@ -221,7 +221,7 @@ New operational area → trigger entry: which CLAUDE.md, `read this BEFORE <acti
 
 ## Step 7: Present and wait for approval
 
-Present the plan in full. Ask whether to proceed or revise. Do not start implementation until the user explicitly approves. If the user requests changes: revise relevant sections, re-run affected web searches if the change materially alters the design, present updated plan.
+Present the plan in full. Ask whether to proceed or revise (if you cannot ask, list the open questions instead and stop). Do not start implementation until the user explicitly approves. If the user requests changes: revise relevant sections, re-run affected web searches if the change materially alters the design, present updated plan.
 
 ---
 

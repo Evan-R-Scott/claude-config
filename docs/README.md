@@ -15,7 +15,7 @@ Read this to maintain the learning loop, set up a new laptop, or undo a curation
 | `/curate` shows its diff | Check each promoted rule is general (no project, host or path names) and rejected ones deserve rejecting, then confirm | the diff in the session |
 | `/curate` asks "push now?" | Answer yes so other laptops get it | pushes to GitHub |
 | Now and then (monthly) | Skim the topic docs, delete or fix rules that no longer hold | `~/claude-config/docs/*.md`, `~/claude-config/CLAUDE.md` |
-| Another laptop | `git -C ~/claude-config pull` | that laptop |
+| Another laptop | `git -C ~/claude-config pull --recurse-submodules` | that laptop |
 | Curate result looks wrong | Finished run: `git -C ~/claude-config revert <commit>`. Unfinished run: `git -C ~/claude-config checkout -- CLAUDE.md docs` | `~/claude-config` |
 
 Pending lessons: `cat ~/claude-config/docs/_inbox.md` (local to each laptop, not in git). Lessons are captured automatically when you correct Claude or state a preference. Curation is deliberately manual so nothing is written to your global rules without your review.
@@ -32,7 +32,7 @@ Pending lessons: `cat ~/claude-config/docs/_inbox.md` (local to each laptop, not
 
 - A plain `git clone` is enough: `./install.sh` fetches the submodules itself.
 - Anyone can pull the latest with `./install.sh --update`. It moves only the vendored skills to their upstream tip and prints what changed. Skim it: it is third-party text that Claude will follow.
-- If you maintain this repo, commit the new pointer afterwards (`git add vendor && git commit`), so everyone else gets it with a normal `git pull` plus `git submodule update`.
+- If you maintain this repo, commit the new pointer afterwards (`git add vendor && git commit`), so everyone else gets it with `git pull --recurse-submodules` (a plain `git pull` leaves the submodule at its old commit, and `./install.sh` does not move it).
 
 ## Notes
 

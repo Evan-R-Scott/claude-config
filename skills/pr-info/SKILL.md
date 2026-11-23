@@ -55,6 +55,8 @@ If already on the PR branch, `gh pr checkout` just updates it; that is fine.
 
 ## 4. Summarize
 
+When another skill (such as `plan`) called you and only needs the data, skip this summary and hand over the fetched data. Ignore comments that only quote another comment (email echoes: a body starting with "On ... wrote:").
+
 Keep it short, in this order, and do not paste raw JSON:
 
 - **PR #n: title** (url), `head -> base`, state (flag DRAFT, MERGED or CLOSED clearly), review decision, mergeable.

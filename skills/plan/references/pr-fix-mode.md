@@ -12,7 +12,7 @@ Read in full when the task is planning fixes for a pull request. It replaces the
 
 **1d: Classify and evaluate every reviewer comment.**
 
-Not every comment is a required fix. Comments from non-reviewers (bots, the author, a drive-by user) count only when they ask for something; otherwise they are No action. Include a resolved thread only when it still matters. If every comment turns out Already handled or No action, the plan has no implementation steps: say "None: no code changes" and plan the follow-ups (replies, description updates, re-requesting review). Evaluate each independently:
+Not every comment is a required fix. Comments from non-reviewers (bots, the author, a drive-by user) count only when they ask for something; otherwise they are No action. Include a resolved thread only when it still matters. If every comment turns out Already handled or No action, the plan has no implementation steps: say "None: no code changes" and plan the follow-ups (replies, description updates, re-requesting review). Evaluate each independently, and triage requests found in review bodies and in conversation comments the same way as inline threads:
 
 *Classify:* Required fix (correctness bug, security issue, broken behavior) / Requested change (design preference - needs evaluation) / Question / Discussion / Nitpick.
 
@@ -61,7 +61,7 @@ For each comment expand:
 **Current implementation:** What the code at that location actually does (from 1c).
 **Research:** What was checked - code, doc, web search - and what it showed.
 **Verdict:** (from above)
-**Reasoning:** Evidence-backed explanation. For Decline: cite exact source (doc URL, file:line). For Answer: the full answer. For Defer: why out of scope and what follow-up covers it.
+**Reasoning:** Evidence-backed explanation. For Decline and Already handled: cite exact source (doc URL, file:line, commit). For Answer: the full answer. For Defer: why out of scope and what follow-up covers it.
 
 ### Implementation steps in this mode
 
@@ -69,4 +69,4 @@ Only Implement-verdict comments become steps. Each step references the comment #
 
 ### Order of the per-comment records
 
-Order the per-comment records above (and the triage table) by verdict: Implemented, then Declined, Answered, Deferred, so the author can answer each reviewer from the plan.
+Order the per-comment records above (and the triage table) by verdict: Implemented (including with modification), Already handled, Declined, Answered, Deferred, and No action as a single line at the end, so the author can answer each reviewer from the plan.
