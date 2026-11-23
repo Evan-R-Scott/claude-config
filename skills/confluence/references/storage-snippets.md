@@ -1,5 +1,7 @@
 # Confluence storage-format snippets
 
+Verified on Confluence Cloud (v2 API): the info, note, warning and tip panels with `containerLevel` `panel_c1`, the `toc` `maxLevel`, the `status` colours and the `code` language are all stored as written and render as panels, lozenges and a contents list.
+
 Shared by `confluence` and the page-type skills (`doc-design`, `doc-runbook`). Exact XHTML for the elements their templates use. Escape `& < >` in text. Do not add `ac:local-id` or `ac:macro-id` attributes; Confluence adds them on save. Panels use `containerLevel` `panel_c1`.
 
 ## Summary panel (info) and table of contents

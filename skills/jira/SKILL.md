@@ -27,7 +27,7 @@ The argument is an issue key (`ABC-123`) or any Jira URL containing one (`/brows
 
 ## Fetch
 
-Run these in parallel. Each result is plain text and enters the conversation in full, so summarize it for the user; for a very long ticket use `--max`-style limits only where the command offers them and say what was left out.
+Run these in parallel. Each result is plain text and enters the conversation in full, so summarize it for the user and say what you left out of a very long ticket.
 
 ```bash
 acli jira workitem view <KEY> --fields "summary,status,issuetype,priority,assignee,reporter,labels,components,fixVersions,created,updated,description,parent,subtasks"
