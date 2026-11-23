@@ -1,6 +1,6 @@
 # Confluence storage-format snippets
 
-Shared by `confluence` and the page-type skills (`design-page`, `runbook-page`). Exact XHTML for the elements their templates use. Escape `& < >` in text. Do not add `ac:local-id` or `ac:macro-id` attributes; Confluence adds them on save. Panels use `containerLevel` `panel_c1`.
+Shared by `confluence` and the page-type skills (`doc-design`, `doc-runbook`). Exact XHTML for the elements their templates use. Escape `& < >` in text. Do not add `ac:local-id` or `ac:macro-id` attributes; Confluence adds them on save. Panels use `containerLevel` `panel_c1`.
 
 ## Summary panel (info) and table of contents
 

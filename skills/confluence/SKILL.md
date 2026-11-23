@@ -76,11 +76,11 @@ payload: `{"id":"<ID>","status":"current","title":"<title>","body":{"representat
 
 Needs a space (id or key), a title, an optional parent and the body. Resolve the space id with `cf "$S/wiki/api/v2/spaces?keys=<KEY>"`. Show the title, space, parent and body, get a yes, then `POST $S/wiki/api/v2/pages` with `{"spaceId":"<id>","status":"current","title":..,"parentId":"<id>","body":{"representation":"storage","value":..}}`. Verify by reading it back. Check for an existing page with the same title in the space first (duplicates are rejected).
 
-## Page-type skills
+## Document-type skills
 
 Shared storage-format snippets (panels, tables, status lozenges, code blocks, steps) are in `references/storage-snippets.md`; read it when writing a new body.
 
-This skill is only the mechanics (read, search, edit, create). Content rules for a particular kind of page live in separate skills that publish through this one. Before drafting a new page or a rewrite, check the installed skills for one that matches the page's purpose and follow it for structure: `design-page` for high-level system or architecture design pages, `runbook-page` for step-by-step runbooks and how-to pages. If none matches, write the page plainly; do not apply a template meant for another page type.
+This skill is only the mechanics (read, search, edit, create). Content rules for a particular kind of document live in separate `doc-*` skills that publish through this one. Before drafting a new page or a rewrite, check the installed skills for one that matches the page's purpose and follow it for structure: `doc-design` for high-level system or architecture designs, `doc-runbook` for step-by-step runbooks and how-to docs (these also write Markdown files; `doc-render` handles both destinations). If none matches, write the page plainly; do not apply a template meant for another page type.
 
 ## Rules
 
