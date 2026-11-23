@@ -1,6 +1,6 @@
 ---
 name: understand
-description: "Explain one or more files from a local repo step by step, with context pulled from the repo's CLAUDE.md. Usage: /understand <repo-name> <file1> [file2] ... OR /understand <github-pr-url>"
+description: "Explain one or more files from a local repo step by step, with context pulled from the repo's CLAUDE.md. ONLY when asked to explain named files or a PR; NOT for general questions or reviews. Usage: /understand <repo-name> <file1> [file2] ... OR /understand <github-pr-url>"
 metadata:
   version: "1.1.0"
   category: learning
@@ -65,7 +65,7 @@ If a relative path was given, read it directly:
 
 If only a filename was given, search for it:
 ```bash
-find <ROOT> -name "<filename>" -not -path "*/.git/*"
+find <ROOT> -name "<filename>" -not -path "*/.git/*" -not -path "*/node_modules/*" -not -path "*/vendor/*"
 ```
 
 (for a dotfile also try `.<filename>`). If a bare filename has several matches, list them and ask which one was meant, but explain the files that are unambiguous in the meantime: one ambiguous name must not block the others.
@@ -92,7 +92,7 @@ Structure each file's explanation as follows:
 
 Use plain language. Avoid jargon without defining it first. If a term (a framework concept, a protocol, an internal name) is domain-specific, explain it briefly the first time it appears.
 
-**Summary**: End each file with 2–3 sentences on how this file fits into the bigger picture - what breaks if it's missing, what it depends on, what depends on it.
+**Summary**: End each file with 2-3 sentences on how this file fits into the bigger picture - what breaks if it's missing, what it depends on, what depends on it.
 
 ### Rules
 

@@ -32,6 +32,7 @@ get(){ [ -f "$p" ] && grep -E "^$1=" "$p" | head -1 | cut -d= -f2-; }
 S=${ATLASSIAN_SITE:-$(get server)}; S=${S%/}; S=${S%/wiki}; case $S in http*) ;; *) S=https://$S;; esac
 SCRATCH="${SCRATCH:-/tmp/confluence-$USER}"; mkdir -p "$SCRATCH" && chmod 700 "$SCRATCH"   # if the system prompt lists a scratchpad directory, set SCRATCH to it first
 [ -f "$p" ] && [ -n "$(find "$p" \( -perm -040 -o -perm -004 \) 2>/dev/null)" ] && echo "warning: $p is readable by others, run chmod 600 on it" >&2
+[ "$S" = https:// ] && echo "error: no site: set ATLASSIAN_SITE or run the dotfiles setup" >&2
 cf(){ printf 'user = "%s:%s"\n' "${ATLASSIAN_EMAIL:-$(get user)}" "${ATLASSIAN_API_TOKEN:-$(get password)}" | curl -sS -K - -H 'Accept: application/json' -w '\nHTTP_STATUS:%{http_code}\n' "$@"; }
 ```
 

@@ -1,6 +1,6 @@
 ---
 name: jira
-description: "Load a Jira Cloud ticket's context into the session (fields, description, all comments, attachments list, links, parent, subtasks and brief of related tickets) from a key or URL on any Jira site you are logged in to, using Atlassian's official acli. Usage: /jira <issue-key | issue-url> [--no-related]"
+description: "Load a Jira Cloud ticket's context into the session (fields, description, all comments, attachments list, links, parent, subtasks and brief of related tickets) from a key or URL on any Jira site you are logged in to, using Atlassian's official acli. ONLY to read a ticket; never edits Jira. Usage: /jira <issue-key | issue-url> [--no-related]"
 metadata:
   version: "3.0.0"
   category: devops
@@ -11,7 +11,7 @@ compatibility:
 
 # Jira
 
-Reads one ticket with Atlassian's official CLI, `acli` (Jira Cloud). Read-only: never run `edit`, `transition`, `assign`, `comment create`, `link create`, `delete`, `archive` or anything else that changes Jira.
+Reads one ticket with Atlassian's official CLI, `acli` (Jira Cloud). Read-only on Jira (its only local side effect is the optional `auth switch` below): never run `edit`, `transition`, `assign`, `comment create`, `link create`, `delete`, `archive` or anything else that changes Jira.
 
 ## Setup (once per machine)
 
@@ -23,7 +23,7 @@ If `acli` is missing or `acli jira auth status` reports unauthorized, show these
 
 ## Resolve the ticket
 
-The argument is an issue key (`ABC-123`) or any Jira URL containing one (`/browse/ABC-123`, board `selectedIssue=ABC-123`). For a URL, take the host (`<site>.atlassian.net`) and compare it with the site in `acli jira auth status`. If they differ, run `acli jira auth switch --site <host>`, and if that site is not logged in, show the login step and stop.
+The argument is an issue key (`ABC-123`) or any Jira URL containing one (`/browse/ABC-123`, board `selectedIssue=ABC-123`). For a URL, take the host (`<site>.atlassian.net`) and compare it with the site in `acli jira auth status`. If they differ, run `acli jira auth switch --site <host>`, and if that site is not logged in, show the login step and stop. `auth switch` changes the active site for every later `acli` session, so tell the user which site you switched from and to, and switch back at the end when it was not the one they had.
 
 ## Fetch
 

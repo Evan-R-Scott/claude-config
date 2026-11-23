@@ -24,15 +24,15 @@ One or more files or folders. Optionally `--base-dir <dir>`: a checkout onto whi
 
 ## Trust and run directory
 
-Make one run directory with `mktemp -d <scratchpad>/review-XXXXXX` (or plain `mktemp -d` if the system prompt lists no scratchpad directory), call it `RUN`, and name it in the report. Never use the scratchpad directory itself as `RUN`, because the cleanup removes `RUN`. Files the user wrote or owns are trusted. A downloaded or emailed script, a patch from outside, or anything of unknown origin is untrusted unless the user passed `--trust` (see the engine's **Trust**). When unsure, treat it as untrusted. There is no base: a check failure is reported as observed.
+Make one run directory with `mktemp -d <scratchpad>/review-XXXXXX` (or plain `mktemp -d` if the system prompt lists no scratchpad directory), call it `RUN`, and name it in the report. Never use the scratchpad directory itself as `RUN`, because the cleanup removes `RUN`. Files the user wrote are trusted; a folder that looks like a third-party checkout or download (a cloned project with other authors in its history, a vendored or extracted archive) is untrusted unless the user passed `--trust`, even when the user owns the directory. A downloaded or emailed script, a patch from outside, or anything of unknown origin is untrusted unless the user passed `--trust` (see the engine's **Trust**). When unsure, treat it as untrusted. There is no base: a check failure is reported as observed.
 
 ## Read
 
-Read each file directly. If the paths are inside a git or svn working copy, still review the files as they are; use the history only for context (`git --no-optional-locks -C <the path's directory> log -5 -- <path>`).
+Read each file directly, but never follow a symlink whose target lies outside the given paths (for example into `~/.ssh` or `~/.config`): list it, do not Read it, and note it in the report. Find them with `find <path> -type l -exec readlink -f {} +`. If the paths are inside a git or svn working copy, still review the files as they are; use the history only for context (`git --no-optional-locks -C <the path's directory> log -5 -- <path>`).
 
 ## Execution copy
 
-Copy the paths to `<RUN>/tree/` with `rsync -a --copy-unsafe-links --relative --exclude=.git --exclude=node_modules --exclude=.venv <parent>/./<path1> <parent>/./<path2> ... <RUN>/tree/` (`<parent>` is their common parent directory, the `/./` keeps each path's layout relative to it so same-named files from different folders do not collide; `--copy-unsafe-links` turns a symlink pointing outside the copy into a real file, so a test cannot write through it into the original), and run checks there. For the project context (E1) look for `CLAUDE.md` and config files in the nearest ancestors of that parent; plain files have no repository root. Remove it at the end.
+Copy the paths to `<RUN>/tree/` with `rsync -a --relative --exclude=.git --exclude=node_modules --exclude=.venv <parent>/./<path1> <parent>/./<path2> ... <RUN>/tree/` (`<parent>` is their common parent directory, the `/./` keeps each path's layout relative to it so same-named files from different folders do not collide; without `--copy-unsafe-links`, a symlink pointing outside is copied as a link (not its content): remove any such link from the copy before running checks, so a test can neither read nor write through it), and run checks there. For the project context (E1) look for `CLAUDE.md` and config files in the nearest ancestors of that parent; plain files have no repository root. Remove it at the end.
 
 ## Untouched check
 

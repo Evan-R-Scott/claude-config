@@ -1,6 +1,6 @@
 ---
 name: curate
-description: "Merge captured lessons from the inbox into the global docs, keeping them small, generalizable and free of contradictions. Always shows a diff and waits for confirmation before writing. Usage: /curate"
+description: "Merge captured lessons from the inbox into the global docs, keeping them small, generalizable and free of contradictions. ONLY when asked to curate lessons. Always shows a diff and waits for confirmation before writing. Usage: /curate"
 disable-model-invocation: true
 metadata:
   version: "1.0.0"
@@ -25,8 +25,8 @@ Merge candidate lessons from `docs/_inbox.md` into the topic docs. The user conf
 
 ## 2. Prepare
 
-- If a remote exists and the tree is clean: `git -C ROOT pull --rebase`. On a conflict stop, show it and leave the inbox as it is (`.processing` is picked up next run).
-- Checkpoint commit of the user's own uncommitted edits to CLAUDE.md and `docs/` (skip when `git -C ROOT status --porcelain -- CLAUDE.md docs` prints nothing, which also covers new untracked files; never abort on "nothing to commit"): `git -C ROOT add CLAUDE.md docs` then `git -C ROOT commit -m "Checkpoint before curate" -- CLAUDE.md docs` (the pathspec keeps any other staged work in the clone out of the commit). This keeps the curate commit to curate's own changes, so undo by revert is clean. The pull and the checkpoint are the only writes before the user confirms.
+- Checkpoint commit of the user's own uncommitted edits to CLAUDE.md and `docs/` (skip when `git -C ROOT status --porcelain -- CLAUDE.md docs` prints nothing, which also covers new untracked files; never abort on "nothing to commit"): `git -C ROOT add CLAUDE.md docs` then `git -C ROOT commit -m "Checkpoint before curate" -- CLAUDE.md docs` (the pathspec keeps any other staged work in the clone out of the commit). This keeps the curate commit to curate's own changes, so undo by revert is clean.
+- Then, if a remote exists and `git -C ROOT status --porcelain` prints nothing: `git -C ROOT pull --rebase`. On a conflict stop, show it and leave the inbox as it is (`.processing` is picked up next run). The checkpoint and the pull are the only writes before the user confirms.
 
 ## 3. Promotion gate (the only definition of the gate)
 
@@ -56,5 +56,5 @@ Entries that fail are listed with the failing criterion and discarded. No repeti
 
 ## Undo
 
-- Unfinished run (not yet committed): `git -C ROOT checkout -- CLAUDE.md docs`. The inbox files are git-ignored, so captured lessons survive.
+- Unfinished run (not yet committed): `git -C ROOT checkout -- CLAUDE.md docs` and delete any topic doc this run created (`git -C ROOT clean -f -- docs`). The inbox files are git-ignored, so captured lessons survive.
 - Finished run: `git -C ROOT revert <curate commit>`.

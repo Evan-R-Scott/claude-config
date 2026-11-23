@@ -2,7 +2,7 @@
 
 Structure follows operations practice (one shared template with consistent metadata, ordered steps, verification, recovery, escalation, and a test and review record, as in the AWS Well-Architected runbook guidance and incident-response runbooks) and the Diataxis "how-to guide" type: action-focused, for a reader who already knows what they want to achieve. It does not teach concepts (link to the design page) and does not mix several tasks. One task or one alert per page.
 
-Choose the type first, because it changes sections 5 to 7:
+Choose the type first, because it changes the layout:
 
 - **Procedure** (use a tool, perform a routine or planned task): steps run in a fixed order.
 - **Alert response** (an alert fired, something is failing): triage first, then mitigate, then fix; the reader is under pressure and may be paged at night.

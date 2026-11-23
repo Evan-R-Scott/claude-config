@@ -1,6 +1,6 @@
 ---
 name: review
-description: "Full senior-engineer review of technical work: local uncommitted changes (git or svn), a GitHub pull request, or any files, folders, docs or plans. Checks correctness, security, performance, docs accuracy, test coverage and production-readiness. Runs in a Sonnet subagent and returns the complete report. Usage: /review [path | pr-url | --files <path>...] [diff-selection flags]; --recheck <report-file> verifies earlier findings first; --trust lets the review run code from an unverified source."
+description: "Full senior-engineer review of technical work: local uncommitted changes (git or svn), a GitHub pull request, or any files, folders, docs or plans. Checks correctness, security, performance, docs accuracy, test coverage and production-readiness. Runs in a Sonnet subagent and returns the complete report. ONLY when asked to review; NOT for explaining code or planning. Usage: /review [path | pr-url | --files <path>...] [diff-selection flags]; --recheck <report-file> verifies earlier findings first; --trust lets the review run code from an unverified source."
 argument-hint: "[path | pr-url] [--files <path>... [--base-dir <dir>]] [--only <path>...] [--staged | --unstaged | --base <ref> | --commit <id> | --range <a>..<b>] [--recheck <report-file>] [--trust]"
 metadata:
   version: "3.0.0"
@@ -19,7 +19,7 @@ One review for any technical work. You resolve the target, run the review in a S
 
 | Arguments | What is reviewed | Source skill (how to get it) |
 |---|---|---|
-| a `https://github.com/<owner>/<repo>/pull/<n>` URL [`--trust`] | a pull request (`--trust` lets the review run an outside contributor's code; without it a fork or outside-author PR is reviewed without running its code) | `source-github-pr` |
+| a `https://<host>/<owner>/<repo>/pull/<n>` URL (github.com or a GitHub Enterprise host) [`--trust`] | a pull request (`--trust` lets the review run an outside contributor's code; without it a fork or outside-author PR is reviewed without running its code) | `source-github-pr` |
 | `--files <path>...` [`--base-dir <dir>`] [`--trust`] | those files or folders as they are (docs, plans, configs, scripts); a `.patch` or `.diff` file can be applied onto `--base-dir` | `source-paths` |
 | anything else: optional `path` (default: current directory), at most one of `--staged`, `--unstaged`, `--base <ref>`, `--commit <id>`, `--range <a>..<b>`, optional `--only <path>...`, optional `--trust` | local uncommitted changes in a git or svn working copy | `source-local-changes` |
 
