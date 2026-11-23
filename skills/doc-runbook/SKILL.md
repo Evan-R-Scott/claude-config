@@ -22,7 +22,7 @@ Do not use it for pages that explain what a system is and why it is built that w
 ## Workflow
 
 1. **Gather facts, do not invent them.** Sources: the user, the repo (README, scripts, CI config), tickets (`/jira` when installed), existing pages (`confluence` skill, read-only), tool `--help` output. Every command and expected output in the page must come from a source (the repo, the tool's own `--help` or docs) or from running a safe, read-only command. A basic command of a widely known tool (for example `git push`) may be written when you label it standard usage, not repo-specific; any other command you have not seen is an open question. If existing docs already cover the procedure, link to them and write only what they lack. Missing or uncertain details become questions, not guesses.
-2. **Pick the type and fit the template** in `references/template.md`: Procedure (steps in a fixed order) or Alert response (triage, mitigate, then fix). Keep the page to one task or one alert. Keep section order, drop an optional section when it has nothing real to say; the template is a checklist, not a form.
+2. **Pick the type and fit the template** in `references/template.md`: Procedure (steps in a fixed order) or Alert response (triage, mitigate, then fix; the template gives it its own layout: severity, quick checks, mitigation). Keep the page to one task or one alert. Keep section order, drop an optional section when it has nothing real to say; the template is a checklist, not a form.
 3. **Draft in Markdown first** and show it to the user with the gaps listed. Ask who owns the page, who is escalated to, when to escalate, and whether the procedure is safe to repeat; if you cannot ask, follow `~/.claude/skills/doc-render/SKILL.md` section 0.
 4. **Choose the destination and render it** by following `~/.claude/skills/doc-render/SKILL.md`: Confluence page or Markdown file, with its rendering rules, publishing flow and confirmation steps. For a rewrite of an existing doc, keep the macros, images and links you are not changing.
 5. **Verify the commands against the destination:** for a Confluence page, commands and code blocks must survive rendering unchanged (compare them with the draft); a Markdown file written directly needs no such check.
@@ -30,6 +30,7 @@ Do not use it for pages that explain what a system is and why it is built that w
 
 ## Rules
 
+- A threshold, time limit or severity scale with no source is labelled "(assumption)"; an error message you have not seen is described in words, never invented.
 - Steps are imperative and numbered, one action each; every step that can fail states what the reader should see when it worked. Alert runbooks mitigate before they diagnose.
 - Commands are copy-pasteable in code blocks, with placeholders in capitals for values the reader supplies. Never put a secret, token, internal password or personal address in a page: refer to where it is kept.
 - Mark every destructive or irreversible step with a warning panel before it, and give the undo (or say there is none).
