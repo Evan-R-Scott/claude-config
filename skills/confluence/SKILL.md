@@ -15,8 +15,8 @@ Reads go through Atlassian's official `acli` when it is installed and logged in.
 
 ## Setup (once per machine)
 
-- Reads: `acli confluence auth login --web`, or `echo <token> | acli confluence auth login --site <site>.atlassian.net --email <email> --token` (token from https://id.atlassian.com/manage-profile/security/api-tokens, without scopes).
-- Search, edit, create: set three environment variables, for example in the file your shell profile loads (such as `~/.zshrc.local`), with `chmod 600` on that file:
+- Reads: `acli confluence auth login --web`, or `acli confluence auth login --site <site>.atlassian.net --email <email> --token < token.txt` (the token file is read from stdin so it never appears on a command line or in history; token from https://id.atlassian.com/manage-profile/security/api-tokens, without scopes).
+- Search, edit, create: set three environment variables, for example in the file your shell profile loads (such as `~/.zshrc.local`), with `chmod 600` on that file. `acli confluence auth` is a separate login from `acli jira auth`:
   `export ATLASSIAN_SITE=https://<site>.atlassian.net`, `export ATLASSIAN_EMAIL=<email>`, `export ATLASSIAN_API_TOKEN=<API token>`.
   Claude's shell must load them: put them in a file read by login shells (`~/.zprofile`, `~/.zshenv`, or a file those source), not only `.zshrc`. Check with `[ -n "$ATLASSIAN_API_TOKEN" ] && echo set` (never echo the value).
 - Fallback if the variables are unset: `~/.atlassian/confluence.properties` with `server=`, `user=`, `password=` (the token), one per line, `chmod 600`.
@@ -30,10 +30,12 @@ Define these helpers in every Bash call (shell state does not persist); they rea
 p=~/.atlassian/confluence.properties
 get(){ [ -f "$p" ] && grep -E "^$1=" "$p" | head -1 | cut -d= -f2-; }
 S=${ATLASSIAN_SITE:-$(get server)}; S=${S%/}; S=${S%/wiki}; case $S in http*) ;; *) S=https://$S;; esac
-cf(){ printf 'user = "%s:%s"\n' "${ATLASSIAN_EMAIL:-$(get user)}" "${ATLASSIAN_API_TOKEN:-$(get password)}" | curl -sS -K - -H 'Accept: application/json' "$@"; }
+SCRATCH=<the scratchpad directory path from the system prompt: write the real path here>
+[ -f "$p" ] && [ "$(stat -c %a "$p")" != 600 ] && echo "warning: $p is not mode 600, run chmod 600 on it" >&2
+cf(){ printf 'user = "%s:%s"\n' "${ATLASSIAN_EMAIL:-$(get user)}" "${ATLASSIAN_API_TOKEN:-$(get password)}" | curl -sS -K - -H 'Accept: application/json' -w '\nHTTP_STATUS:%{http_code}\n' "$@"; }
 ```
 
-Never print, echo, log or write the email or token (not even `env` or `set` output); show the file only with values redacted. The URL's host must equal the host in `$S`; if a user gives a page on another site, stop and say credentials for that site are needed (credentials are never sent to another host). If calls return 401 or 403 while the token is valid, it may be a scoped token: use the gateway `https://api.atlassian.com/ex/confluence/<cloudId>` in place of `$S` (the cloud id is at `$S/_edge/tenant_info`), and say so if neither works.
+`cf` ends its output with an `HTTP_STATUS:<code>` line (it is the last line of the output, or the only output when `-o` writes the body to a file). Always read it: only a 2xx status means the body is the page. For any other status stop and show the one-line status and reason, delete the file `-o` wrote (it holds an error body, not the page), and never continue an edit on it. Never print, echo, log or write the email or token (not even `env` or `set` output); show the file only with values redacted. The URL's host must equal the host in `$S`; if a user gives a page on another site, stop and say credentials for that site are needed (credentials are never sent to another host). If calls return 401 or 403 while the token is valid, it may be a scoped token: use the gateway `https://api.atlassian.com/ex/confluence/<cloudId>` in place of `$S` (the cloud id is at `$S/_edge/tenant_info`), and say so if neither works.
 
 ## Resolve the target
 
@@ -51,7 +53,7 @@ cf -G "$S/wiki/rest/api/search" --data-urlencode 'cql=space = "<KEY>" AND type =
 cf "$S/wiki/api/v2/pages/<ID>/children?limit=50"
 ```
 
-`$SCRATCH` is the scratchpad directory. The body is XHTML "storage format": for a summary, strip tags with a small `python3 -I` snippet and report the title, space, version and the content that matters; never dump raw storage HTML at the user. For attachments, labels or comments use `$S/wiki/api/v2/pages/<ID>/attachments`, `/labels`, `/footer-comments` the same way, only when asked.
+The body is XHTML "storage format": for a summary, strip tags with a small `python3 -I` snippet and report the title, space, version and the content that matters; never dump raw storage HTML at the user. For attachments, labels or comments use `$S/wiki/api/v2/pages/<ID>/attachments`, `/labels`, `/footer-comments` the same way, only when asked.
 
 ## Edit (the only way pages are changed)
 
@@ -74,7 +76,7 @@ payload: `{"id":"<ID>","status":"current","title":"<title>","body":{"representat
 
 ## Create
 
-Needs a space (id or key), a title, an optional parent and the body. Resolve the space id with `cf "$S/wiki/api/v2/spaces?keys=<KEY>"`. Show the title, space, parent and body, get a yes, then `POST $S/wiki/api/v2/pages` with `{"spaceId":"<id>","status":"current","title":..,"parentId":"<id>","body":{"representation":"storage","value":..}}`. Verify by reading it back. Check for an existing page with the same title in the space first (duplicates are rejected).
+Needs a space (id or key), a title, an optional parent (leave `parentId` out of the payload when there is none) and the body, building the JSON with `json.dumps` as in an edit. Resolve the space id with `cf "$S/wiki/api/v2/spaces?keys=<KEY>"`. Show the title, space, parent and body, get a yes, then `POST $S/wiki/api/v2/pages` with `{"spaceId":"<id>","status":"current","title":..,"parentId":"<id>","body":{"representation":"storage","value":..}}`. Verify by reading it back. Check for an existing page with the same title in the space first (duplicates are rejected).
 
 ## Document-type skills
 

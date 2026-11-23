@@ -30,7 +30,7 @@ The argument is an issue key (`ABC-123`) or any Jira URL containing one (`/brows
 Run these in parallel. Each result is plain text; keep long output out of the conversation by summarizing it.
 
 ```bash
-acli jira workitem view <KEY> --fields "summary,status,issuetype,priority,assignee,reporter,labels,components,fixVersions,created,updated,description,parent,subtasks,issuelinks,attachment"
+acli jira workitem view <KEY> --fields "summary,status,issuetype,priority,assignee,reporter,labels,components,fixVersions,created,updated,description,parent,subtasks"
 acli jira workitem comment list --key <KEY> --paginate
 acli jira workitem link list --key <KEY>
 acli jira workitem attachment list --key <KEY>
@@ -42,7 +42,7 @@ acli jira workitem attachment list --key <KEY>
 
 **Related tickets** (skip with `--no-related`): collect the keys of the parent, subtasks and linked tickets (at most 10, blockers and parents first). For each, run `acli jira workitem view <RELKEY>` (default fields: summary, status, assignee, description) and keep only a two-line brief. Run the full fetch again on a related key when its brief is not enough (a parent often holds the real requirements).
 
-**Attachments:** `acli` can list attachments but has no download command. List them with name and size and say that their content was not read. If a log or screenshot looks essential, ask the user to download it and give the path, then read it with Read. Tickets' web and Confluence links are not exposed by `acli` either; take any URL from the description and comments, and for a Confluence page offer `acli confluence page view --id <pageId>` (the id is the number after `/pages/` in the URL).
+**Attachments:** `acli` can list attachments but has no download command. List them with name and size and say that their content was not read. If a log or screenshot looks essential, ask the user to download it and give the path, then read it with Read. Tickets' web and Confluence links are not exposed by `acli` either; take any URL from the description and comments, and for a Confluence page offer `acli confluence page view --id <pageId>` (a separate login from Jira: `acli confluence auth login`) (the id is the number after `/pages/` in the URL).
 
 ## Present
 
