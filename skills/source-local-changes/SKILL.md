@@ -40,9 +40,9 @@ A `path` that is a subdirectory and every `--only <path>` become pathspecs, made
 
 Make one run directory with `mktemp -d <scratchpad>/review-XXXXXX` (or plain `mktemp -d` if the system prompt lists no scratchpad directory), call it `RUN`, and name it in the report. Never use the scratchpad directory itself as `RUN`, because the cleanup removes `RUN`.
 
-**Trust:** changes in the working copy are trusted. `--commit`, `--range` and `--base` are trusted only if every commit in scope is authored by the configured user, or the user passed `--trust`; otherwise untrusted (see the engine's **Trust**). Read the authors with `git --no-optional-locks -C <root> log --format=%ae <scope>` where `<scope>` is `<id>^!` for `--commit`, `<a>..<b>` for `--range` and `<MB>..HEAD` for `--base`, and compare with `git config user.email`. Author emails can be forged, so this is a heuristic. For svn, `--commit` and `--range` are untrusted unless the user passed `--trust`.
+**Trust:** changes in the working copy are trusted. `--commit`, `--range` and `--base` are trusted only if every commit in scope is authored by the configured user, or the user passed `--trust`; otherwise untrusted (see the engine's **Trust**). Read the authors with `git --no-optional-locks -C <root> log --format=%ae <scope>` where `<scope>` is `<id>^!` for `--commit`, `<a>..<b>` for `--range` and `<MB>..HEAD` for `--base`, and compare with `git -C <root> config user.email`. Author emails can be forged, so this is a heuristic. For svn, `--commit` and `--range` are untrusted unless the user passed `--trust`.
 
-**Base** (for the engine's "is this failure new?" re-run): the working copy and `--staged` use `HEAD`; `--unstaged` uses the index (copy the index file to `<RUN>/idx`, then `GIT_INDEX_FILE=<RUN>/idx git --no-optional-locks -C <root> write-tree` and export that tree); `--base <ref>` uses the merge-base SHA; `--commit <id>` uses `<id>^` (a root commit has none: report the base as none); `--range <a>..<b>` uses `<a>`; svn uses `svn export -r BASE`. Export it to `<RUN>/base-tree` the way **Execution copy** says.
+**Base** (for the engine's "is this failure new?" re-run): the working copy and `--staged` use `HEAD` (a repository with no commit yet has none: report the base as none); `--unstaged` uses the index; `--base <ref>` uses the merge-base SHA; `--commit <id>` uses `<id>^` (a root commit has none: report the base as none); `--range <a>..<b>` uses `<a>`; svn uses `svn export -r BASE`. Export it to `<RUN>/base-tree` the way **Execution copy** says.
 
 ## Collect
 
@@ -114,7 +114,17 @@ GIT_INDEX_FILE=<RUN>/idx git --no-optional-locks -C <root> read-tree <sha-or-tre
 GIT_INDEX_FILE=<RUN>/idx git --no-optional-locks -C <root> checkout-index -a --prefix=<RUN>/tree/
 ```
 
-(`--staged` and `--unstaged` get the index content by `write-tree` on a copy of the index file, `cp "$(git --no-optional-locks -C <root> rev-parse --path-format=absolute --git-path index)" <RUN>/idx` then `GIT_INDEX_FILE=<RUN>/idx git --no-optional-locks -C <root> write-tree`, never on the real index: that would rewrite it and take `index.lock`. It adds only tree objects to the object store and fails on unmerged entries, which is then a finding in itself.) `--ignore-missing-args` keeps a tracked file that was deleted in the working tree from failing the copy, and `--copy-unsafe-links` turns file links that point outside the tree into plain copies (a link to a directory outside the tree, and a submodule, become empty directories), so nothing in the copy points back at the target. Whatever the way, delete every `.env*` file from the copy and from the base copy (they may hold real credentials; tests that need a fixture such as `.env.example` are noted under Verification Results). Never symlink anything back to the target (tests could write through it) and never link `.git`. Do not copy a `.venv` or `node_modules` either: an editable install in a copied venv still imports the original tree, so the tests would run the wrong code. Run tests with `PYTHONPATH=<RUN>/tree/src` (or the right root) and check that the module's `__file__` points into `<RUN>/tree`; if you cannot, note the tests that could not run under Verification Results. For an svn working copy: `svn export <root> <RUN>/tree` and copy the unversioned files over it. Remove `<RUN>` at the end.
+The index content (`--staged` for the new version, `--unstaged` for the base) comes from a copy of the index file, exported with the same `checkout-index`, never from the real index (reading it can rewrite it and take `index.lock`) and without `write-tree` (which would add objects to the user's repository):
+
+```bash
+cp "$(git --no-optional-locks -C <root> rev-parse --path-format=absolute --git-path index)" <RUN>/idx
+GIT_INDEX_FILE=<RUN>/idx git --no-optional-locks -C <root> checkout-index -a --prefix=<RUN>/tree/        # --staged: the staged content
+GIT_INDEX_FILE=<RUN>/idx git --no-optional-locks -C <root> checkout-index -a --prefix=<RUN>/base-tree/   # --unstaged: the base
+```
+
+The `HEAD` base (working copy and `--staged`) uses a temporary index the same way: `GIT_INDEX_FILE=<RUN>/idx-head git --no-optional-locks -C <root> read-tree HEAD`, then `checkout-index -a --prefix=<RUN>/base-tree/` (if `read-tree HEAD` fails with "Not a valid object name HEAD" there is no commit yet: the base is none). `checkout-index` fails on unmerged entries, which is a finding in itself.
+
+For a large repository or a monorepo copy only the packages that contain changed files, plus the shared configuration they need (root manifest, lockfile, tooling config), not the whole tree; say what you left out. Submodule contents and LFS objects are not in the copy (a submodule becomes an empty directory, an LFS file stays a pointer): a check that fails only because of that is a Note in Verification Results, not a finding and not an INCOMPLETE trigger.
 
 ## Untouched check
 
