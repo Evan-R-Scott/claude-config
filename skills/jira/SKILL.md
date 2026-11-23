@@ -17,7 +17,7 @@ Reads one ticket with Atlassian's official CLI, `acli` (Jira Cloud). Read-only: 
 
 1. Install `acli`: https://developer.atlassian.com/cloud/acli/guides/install-acli/ (Linux: apt or yum repo, or the binary into `~/.local/bin`). Check with `acli --version`.
 2. Log in. Either `acli jira auth login --web` (browser OAuth), or an API token without scopes from https://id.atlassian.com/manage-profile/security/api-tokens, read from stdin so it never appears on a command line or in history: `acli jira auth login --site <site>.atlassian.net --email <email> --token < token.txt`.
-3. `acli jira auth status` shows the active site and account. Another site: `acli jira auth switch --site <site>.atlassian.net`.
+3. `acli jira auth status` shows the active site and account. Another site: `acli jira auth switch --site <site>.atlassian.net`. Confluence is a separate login (`acli confluence auth login`), needed only to read Confluence pages a ticket links.
 
 If `acli` is missing or `acli jira auth status` reports unauthorized, show these steps and stop. Never ask the user to paste a token into the conversation.
 
@@ -27,7 +27,7 @@ The argument is an issue key (`ABC-123`) or any Jira URL containing one (`/brows
 
 ## Fetch
 
-Run these in parallel. Each result is plain text and enters the conversation in full, so summarize it for the user and say what you left out of a very long ticket.
+**First run `acli jira auth status`.** If it prints "unauthorized" or fails, show the Setup steps and stop: the fetch commands alone only say "failed to fetch work item details" and hide the real cause. Then run these in parallel. Each result is plain text and enters the conversation in full, so summarize it for the user and say what you left out of a very long ticket.
 
 ```bash
 acli jira workitem view <KEY> --fields "summary,status,issuetype,priority,assignee,reporter,labels,components,fixVersions,created,updated,description,parent,subtasks"

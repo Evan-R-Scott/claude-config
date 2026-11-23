@@ -24,18 +24,18 @@ Reads go through Atlassian's official `acli` when it is installed and logged in.
 
 ## Credentials in commands
 
-Define these helpers in every Bash call (shell state does not persist); they read the environment first, then the file, and pass the credentials to `curl` on stdin, so the token never appears in the process list or in output:
+Write plain POSIX sh (the shell may be zsh: no zsh-only or bash-only expansions). Define these helpers in every Bash call (shell state does not persist); they read the environment first, then the file, and pass the credentials to `curl` on stdin, so the token never appears in the process list or in output:
 
 ```bash
 p=~/.atlassian/confluence.properties
 get(){ [ -f "$p" ] && grep -E "^$1=" "$p" | head -1 | cut -d= -f2-; }
 S=${ATLASSIAN_SITE:-$(get server)}; S=${S%/}; S=${S%/wiki}; case $S in http*) ;; *) S=https://$S;; esac
-SCRATCH=<the scratchpad directory path from the system prompt: write the real path here>
+SCRATCH="${SCRATCH:-/tmp/confluence-$USER}"; mkdir -p "$SCRATCH"   # if the system prompt lists a scratchpad directory, set SCRATCH to it first
 [ -f "$p" ] && [ "$(stat -c %a "$p")" != 600 ] && echo "warning: $p is not mode 600, run chmod 600 on it" >&2
 cf(){ printf 'user = "%s:%s"\n' "${ATLASSIAN_EMAIL:-$(get user)}" "${ATLASSIAN_API_TOKEN:-$(get password)}" | curl -sS -K - -H 'Accept: application/json' -w '\nHTTP_STATUS:%{http_code}\n' "$@"; }
 ```
 
-`cf` ends its output with an `HTTP_STATUS:<code>` line (it is the last line of the output, or the only output when `-o` writes the body to a file). Always read it: only a 2xx status means the body is the page. For any other status stop and show the one-line status and reason, delete the file `-o` wrote (it holds an error body, not the page), and never continue an edit on it. Never print, echo, log or write the email or token (not even `env` or `set` output); show the file only with values redacted. The URL's host must equal the host in `$S`; if a user gives a page on another site, stop and say credentials for that site are needed (credentials are never sent to another host). If calls return 401 or 403 while the token is valid, it may be a scoped token: use the gateway `https://api.atlassian.com/ex/confluence/<cloudId>` in place of `$S` (the cloud id is at `$S/_edge/tenant_info`), and say so if neither works.
+`cf` ends its output with an `HTTP_STATUS:<code>` line (it is the last line of the output, or the only output when `-o` writes the body to a file). Always read it: only a 2xx status means the body is the page. For any other status stop and show the one-line status and reason, delete the file `-o` wrote (`rm -f "$SCRATCH/<that file>"`: it holds an error body, not the page), and never continue an edit on it. Never print, echo, log or write the email or token (not even `env` or `set` output); show the file only with values redacted. The URL's host must equal the host in `$S`; if a user gives a page on another site, stop and say credentials for that site are needed (credentials are never sent to another host). If calls return 401 or 403 while the token is valid, it may be a scoped token: use the gateway `https://api.atlassian.com/ex/confluence/<cloudId>` in place of `$S` (the cloud id is at `$S/_edge/tenant_info`), and say so if neither works.
 
 ## Resolve the target
 
@@ -45,15 +45,15 @@ cf(){ printf 'user = "%s:%s"\n' "${ATLASSIAN_EMAIL:-$(get user)}" "${ATLASSIAN_A
 ## Read
 
 ```bash
-# preferred when acli is logged in
+# preferred when acli is logged in; if it prints "unauthorized", use the REST read below
 acli confluence page view --id <ID> --body-format view
 # REST: metadata and body (use storage for anything you may edit)
 cf "$S/wiki/api/v2/pages/<ID>?body-format=storage" -o "$SCRATCH/page-<ID>.json"
-cf -G "$S/wiki/rest/api/search" --data-urlencode 'cql=space = "<KEY>" AND type = page AND title ~ "<text>"' --data-urlencode limit=10
+cf -G "$S/wiki/rest/api/search" --data-urlencode 'cql=type = page AND text ~ "<words>"' --data-urlencode limit=10   # add: AND space = "<KEY>", or title ~ "<text>"; keep "type = page" or attachments match too
 cf "$S/wiki/api/v2/pages/<ID>/children?limit=50"
 ```
 
-The body is XHTML "storage format": for a summary, strip tags with a small `python3 -I` snippet and report the title, space, version and the content that matters; never dump raw storage HTML at the user. For attachments, labels or comments use `$S/wiki/api/v2/pages/<ID>/attachments`, `/labels`, `/footer-comments` the same way, only when asked.
+The body is XHTML "storage format": for a summary, strip tags with a small `python3 -I` snippet and report the title, space, version and the content that matters (the v2 page response has only `spaceId`; the key is at `$S/wiki/api/v2/spaces/<spaceId>`); never dump raw storage HTML at the user. For attachments, labels or comments use `$S/wiki/api/v2/pages/<ID>/attachments`, `/labels`, `/footer-comments` the same way, only when asked.
 
 ## Edit and create (read the reference first)
 

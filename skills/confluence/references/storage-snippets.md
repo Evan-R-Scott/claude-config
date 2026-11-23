@@ -1,6 +1,6 @@
 # Confluence storage-format snippets
 
-Verified on Confluence Cloud (v2 API): the info, note, warning and tip panels with `containerLevel` `panel_c1`, the `toc` `maxLevel`, the `status` colours and the `code` language are all stored as written and render as panels, lozenges and a contents list.
+Tested on Confluence Cloud with the v2 API (create, read back, edit, stale-write conflict): the info, note, warning and tip panels with `containerLevel` `panel_c1`, the `toc` `maxLevel`, the `status` colours and the `code` macro with `language` `bash` are stored as written and render as panels, lozenges and a contents list. Not tested: other code languages (a `mermaid` language value is not assumed to exist), `ac:image` with an uploaded attachment, `success` panels.
 
 Shared by `confluence` and the page-type skills (`doc-design`, `doc-runbook`). Exact XHTML for the elements their templates use. Escape `& < >` in text. Do not add `ac:local-id` or `ac:macro-id` attributes; Confluence adds them on save. Panels use `containerLevel` `panel_c1`.
 
@@ -55,8 +55,16 @@ Status colours: `Red`, `Green`, `Yellow`, `Grey`, `Blue`. Put a lozenge inside a
 
 ## Diagram placeholder (the user attaches the image)
 
+Put it under the section heading that already exists (do not add a second heading):
+
 ```xml
-<h2>System overview</h2><p><em>[Diagram to attach here: DESCRIBE WHAT IT SHOWS.]</em></p>
+<p><em>[Diagram to attach here: DESCRIBE WHAT IT SHOWS.]</em></p>
+```
+
+A Markdown `mermaid` block has no Confluence equivalent. Keep its source readable below the placeholder as a code macro with no language, so the user can recreate it in a diagram macro or an image:
+
+```xml
+<ac:structured-macro ac:name="code"><ac:plain-text-body><![CDATA[MERMAID SOURCE]]></ac:plain-text-body></ac:structured-macro>
 ```
 
 After the user uploads the image named `system-overview.png` to the page, it can replace the placeholder with:
@@ -64,3 +72,11 @@ After the user uploads the image named `system-overview.png` to the page, it can
 ```xml
 <ac:image ac:align="left" ac:layout="align-start" ac:custom-width="true" ac:alt="System overview" ac:width="900"><ri:attachment ri:filename="system-overview.png" /></ac:image>
 ```
+
+## Links and tables
+
+A relative Markdown link to a repository file becomes a dead link in Confluence: write the file path as `<code>path</code>`, or use an absolute repository URL. A literal pipe inside a Markdown table cell (even inside backticks) splits the cell: escape it as `\|` or reword. The Markdown `# Title` is the Confluence page title, not part of the body. Add the `toc` macro after the Summary panel when the page is longer than a screen.
+
+## Checking the XML
+
+Storage fragments are not well-formed on their own because the `ac:` and `ri:` prefixes are undeclared; wrap them in a root that declares both before parsing (the snippet is in `edit-create.md`, step 2).
