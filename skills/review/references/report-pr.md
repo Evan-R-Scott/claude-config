@@ -29,7 +29,9 @@ Head commit reviewed: `<headRefOid>`. Then the commits (from the collected diff)
 Summarize prior comments. If none: _No reviewer comments._
 
 
-(Findings: the Finding block from `report.md`.)
+### Findings
+
+(Use the Finding block from `report.md` for each finding.)
 
 ### Test Coverage Assessment
 
