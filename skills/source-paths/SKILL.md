@@ -19,7 +19,7 @@ One or more files or folders. Optionally `--base-dir <dir>`: a checkout onto whi
 ## Collect
 
 - Expand each path: a file is reviewed whole; a folder is walked (skip `.git`, `.svn`, `node_modules`, `.venv`, build output, binaries, and generated files; say what you skipped).
-- A `.patch` or `.diff` file (or a diff pasted into the conversation, which the caller saves to a file first) is a change set: read the patch itself. If a checkout is named too (`--base-dir <dir>`), copy it to the execution copy (`rsync -a --exclude=.git`) and apply the patch there (`git apply --check`, then `git apply`) so the changed files can be read and tested whole; otherwise say it was not applied and nothing was run.
+- A `.patch` or `.diff` file (or a diff pasted into the conversation, which the caller saves to a file first) is a change set: read the patch itself. If a checkout is named too (`--base-dir <dir>`), copy it to the execution copy (`rsync -a --copy-unsafe-links --exclude=.git`) and apply the patch there (`git apply --check`, then `git apply`) so the changed files can be read and tested whole; otherwise say it was not applied and nothing was run.
 - Infer what each file is for from its content, its neighbors and any README. State the inferred purpose in the Summary. You cannot ask.
 
 ## Trust and run directory
@@ -32,7 +32,7 @@ Read each file directly. If the paths are inside a git or svn working copy, stil
 
 ## Execution copy
 
-Copy the paths to `<RUN>/tree/`, keeping their layout relative to their common parent directory, and run checks there. For the project context (E1) look for `CLAUDE.md` and config files in the nearest ancestors of that parent; plain files have no repository root. Remove it at the end.
+Copy the paths to `<RUN>/tree/` with `rsync -a --copy-unsafe-links` (so a symlink pointing outside the copy becomes a real file and a test cannot write through it into the original), keeping their layout relative to their common parent directory, and run checks there. For the project context (E1) look for `CLAUDE.md` and config files in the nearest ancestors of that parent; plain files have no repository root. Remove it at the end.
 
 ## Untouched check
 

@@ -119,7 +119,7 @@ GIT_INDEX_FILE=<RUN>/idx git -C <root> checkout-index -a --prefix=<RUN>/tree/
 
 ## Untouched check
 
-Before anything else record the state: git: `git -C <root> status --short --ignored`, `git -C <root> branch --show-current`, `git -C <root> stash list` and `git -C <root> for-each-ref`; svn: `svn status <root>`. At the end compare: a difference the review could have caused is a CRITICAL process finding (the user may be editing at the same time, so look at what changed before blaming the review).
+Before anything else record the state into a file in the run directory (`<RUN>/before.txt`, never into the conversation: `--ignored` lists `node_modules` and build output, which can be huge): git: `git --no-optional-locks -C <root> status --porcelain=v2 -z --ignored`, `git --no-optional-locks -C <root> rev-parse HEAD`, `git --no-optional-locks -C <root> stash list` and `git --no-optional-locks -C <root> for-each-ref`, appended to the file; svn: `svn status <root>`. At the end write the same to `<RUN>/after.txt` and `cmp` the two files, and look at a diff only if they differ. Compare: a difference the review could have caused is a CRITICAL process finding (the user may be editing at the same time, so look at what changed before blaming the review).
 
 ## Restrictions
 
