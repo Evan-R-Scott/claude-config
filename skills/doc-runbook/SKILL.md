@@ -21,11 +21,11 @@ Do not use it for pages that explain what a system is and why it is built that w
 
 ## Workflow
 
-1. **Gather facts, do not invent them.** Sources: the user, the repo (README, scripts, CI config), tickets (`/jira` when installed), existing pages (`confluence` skill, read-only), tool `--help` output. Every command and expected output in the page must come from a source or from running a safe, read-only command; never write a command you have not seen documented. Missing or uncertain details become questions, not guesses.
+1. **Gather facts, do not invent them.** Sources: the user, the repo (README, scripts, CI config), tickets (`/jira` when installed), existing pages (`confluence` skill, read-only), tool `--help` output. Every command and expected output in the page must come from a source (the repo, the tool's own `--help` or docs) or from running a safe, read-only command. A basic command of a widely known tool (for example `git push`) may be written when you label it standard usage, not repo-specific; any other command you have not seen is an open question. If existing docs already cover the procedure, link to them and write only what they lack. Missing or uncertain details become questions, not guesses.
 2. **Pick the type and fit the template** in `references/template.md`: Procedure (steps in a fixed order) or Alert response (triage, mitigate, then fix). Keep the page to one task or one alert. Keep section order, drop an optional section when it has nothing real to say; the template is a checklist, not a form.
-3. **Draft in Markdown first** and show it to the user with the gaps listed. Ask who owns the page, who is escalated to, when to escalate, and whether the procedure is safe to repeat.
+3. **Draft in Markdown first** and show it to the user with the gaps listed. Ask who owns the page, who is escalated to, when to escalate, and whether the procedure is safe to repeat; if you cannot ask, follow `~/.claude/skills/doc-render/SKILL.md` section 0.
 4. **Choose the destination and render it** by following `~/.claude/skills/doc-render/SKILL.md`: Confluence page or Markdown file, with its rendering rules, publishing flow and confirmation steps. For a rewrite of an existing doc, keep the macros, images and links you are not changing.
-5. **Verify the commands against the destination:** commands and code blocks must survive rendering unchanged (copy-paste them back from the rendered form if in doubt).
+5. **Verify the commands against the destination:** for a Confluence page, commands and code blocks must survive rendering unchanged (compare them with the draft); a Markdown file written directly needs no such check.
 6. **Say what was not verified.** Tell the user which steps were not run end to end and ask them (or the page's owner) to walk through the page once, ideally someone new to the task, before it is relied on; set "Last tested" only to what actually happened, and add a review cadence.
 
 ## Rules

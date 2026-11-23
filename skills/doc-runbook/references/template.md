@@ -13,29 +13,30 @@ Order is fixed. Sections marked (optional) are dropped when empty. Short section
 
 1. **Summary** (info panel, first thing on the page). What the page lets the reader do and when to use it, in 1-2 sentences. Alert response: the alert name or symptom that sends the reader here, and the impact.
 
-2. **Page metadata** (one line): Type (Procedure or Alert response), Owner (team or role), Last tested (date and how: run end to end, or reviewed only), Review cadence, Applies to (system, environment, version), Time needed or severity.
+2. **Page metadata** (one line): Type (Procedure or Alert response), Owner (team or role), Last tested (a date and how: "run end to end" or "reviewed only"; write "not run end to end" with no date when nobody ran it), Review cadence, Applies to (system, environment, version), Time needed (only if someone timed it, otherwise leave it out) or severity.
 
 3. **Table of contents** (levels 2-3), for pages longer than a screen.
 
 4. **Purpose and context** (h2, short). Why this procedure exists, what it achieves, and where it fits in the wider operation (what runs before or after). Link to the design page for background; do not explain the system here. Say if it is **safe to repeat** (idempotent) and whether it is automated in part (link the script or pipeline).
 
-5. **Before you start** (h2). Prerequisites as a checklist: access and permissions, tools and versions, information to have ready, who to tell before starting (for changes with impact). Say how to check each one when it is not obvious.
+5. **Before you start** (h2). Prerequisites as a checklist: access and permissions, tools and versions, information to have ready, who to tell before starting (for changes with impact). Say how to check each one when it is not obvious. Leave out an item that does not apply instead of writing "N/A".
 
 6. **Procedure** or **Triage and mitigation** (h2). The core.
-   - *Procedure:* numbered steps, one action each. Per step: the action in bold, a code block with the exact command if any, and "Expected:" with what the reader sees on success. Group long procedures under h3 phases (Prepare, Run, Verify). A warning panel immediately before every destructive or irreversible step, with its undo. Branches are explicit ("If X, go to Troubleshooting: X"), never buried in prose. For a tool how-to, treat installation as a prerequisite (link the tool's README for install and concepts; tutorials and tool onboarding belong there, not here), and write one procedure per common task, the first of which is the shortest useful one.
+   - *Procedure:* numbered steps, one action each. Per step: the action in bold, a code block with the exact command if any, and "Expected:" with what the reader sees on success. Group long procedures under h3 phases (Prepare, Run; verification is its own section 7, not a phase here). A maintainer-only final stage of the same task (publish, announce) may be a last h3 "For the maintainer"; a different task is a different page. A warning panel immediately before every destructive or irreversible step, with its undo. Branches are explicit ("If X, go to Troubleshooting: X"), never buried in prose. For a tool how-to, treat installation as a prerequisite (link the tool's README for install and concepts; tutorials and tool onboarding belong there, not here), and write one procedure per common task, the first of which is the shortest useful one.
    - *Alert response:* first check impact and severity, then a short decision list of quick checks (check, command, what a bad result looks like, next step), then **mitigation first** (restore service: restart, fail over, roll back, scale) before root cause, with the exact commands and expected results. Who to notify and when (incident channel, stakeholders) is a step, not an afterthought.
 
 7. **Verify it worked** (h2). Observable checks that prove the task is done or service is restored: a command and its expected output, a dashboard value, a message. Not "it should work".
 
 8. **Troubleshooting** (h2). A table Symptom or error text | Likely cause | Fix. Use the exact error text readers will search for. Link a deeper page instead of explaining at length.
 
-9. **Roll back** (optional, h2). How to undo the whole procedure and verify the undo. When undoing is not possible, say so here and in the warning panel.
+9. **Roll back** (optional, h2). How to undo the whole procedure and verify the undo. When undoing is not possible, say so here and in the warning panel. An undo you did not verify is marked "(unverified)" or left out; never present an untested undo as safe.
 
 10. **Escalation** (h2). When to stop and escalate (a stated time or condition), whom (roles and channels, not private contact details), and what to include (logs, ticket, times, what was already tried).
 
 11. **Follow-up** (optional, h2). What to do after: ticket or post-incident review, cleanup, updating this page when a step was wrong or missing.
 
-12. **Related** (optional, h2). Design page, source repository, dashboards, neighbouring runbooks.
+12. **Open questions and assumptions** (optional, h2). What you could not confirm (owner, escalation contact, whether it is safe to repeat, a command you could not source): each as one line, so the next person knows what to check. Use it when you could not ask the user.
+13. **Related** (optional, h2). Design page, source repository, dashboards, neighbouring runbooks.
 
 ## Style
 
