@@ -13,6 +13,8 @@ compatibility:
 
 One review for any technical work. You resolve the target, run the review in a Sonnet subagent so the heavy reading stays out of this conversation, show the full report, and, for a pull request, handle posting. This skill only knows how to review (`references/`: the engine, one lens per kind of file, the report format). How to get the content out of your local changes (git or svn), a pull request or plain paths lives in the `source-*` skills, so adding a source (for example Mercurial or a URL) is one new skill and one row in this table.
 
+**When this skill is overkill:** for a small trusted change in your own working copy (about 50 lines or fewer), a plain careful review (read the diff, run the tests) found the same defects at about half the cost in our trials. Use `/review` when you want the proven findings (mutation checks, executed reproductions), the untouched-tree guarantee and the saved report, or when the target is a pull request, an outside contributor's work, or large.
+
 ## 1. Resolve the target from the arguments
 
 | Arguments | What is reviewed | Source skill (how to get it) |

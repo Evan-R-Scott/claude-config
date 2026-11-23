@@ -12,7 +12,7 @@ Work through every item that applies, and look for what the author did not think
 
 ### Security
 - Input validated and sanitized? Injection possible (SQL, shell, template, path traversal)?
-- Secrets/tokens/keys hardcoded, logged, or sitting in untracked files about to be added?
+- Secrets/tokens/keys hardcoded, logged, or sitting in untracked files about to be added? Debug mode, verbose errors or test credentials enabled in committed code or config?
 - Authentication AND authorization: is every access to a resource checked against its owner or tenant (IDOR), not only that the caller is logged in? New dependencies well-maintained and not known-vulnerable?
 - Server-side requests to a user-influenced URL (SSRF), open redirects, CSRF on state-changing routes, unsafe deserialization, crypto misuse (weak or unsalted hashes, static IVs or keys, non-cryptographic random for tokens)?
 - For a security-focused change, apply the `owasp-security` skill's checklist when it is installed.

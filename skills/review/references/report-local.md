@@ -30,7 +30,6 @@ Added / Modified / Deleted / Renamed / Untracked lists, with diffstat. Note anyt
 ### Documentation Assessment
 
 ### Commit Readiness Checklist
-(For a change of about 20 changed lines or fewer write it grouped by mark, as `report.md` says, not as a 12-item list.)
 - Logic correct, edge cases handled
 - No security vulnerabilities or secrets
 - No performance regressions

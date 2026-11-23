@@ -19,15 +19,7 @@ This skill explains files from a repository to help onboard new team members. Tr
 
 The user invokes this skill in one of two ways:
 
-**Mode A - explicit files:**
-```
-/understand <repo-name> <file1> [file2] [file3] ...
-```
-
-**Mode B - PR URL:**
-```
-/understand <pr-url>
-```
+`/understand <repo-name> <file1> [file2] ...` (Mode A), or `/understand <pr-url>` (Mode B).
 
 Parse the args to determine which mode applies. If the first token matches `https://<host>/<owner>/<repo>/pull/<n>` (any host `gh` can reach), it is a PR URL - use Mode B. Otherwise use Mode A.
 
@@ -35,44 +27,13 @@ Parse the args to determine which mode applies. If the first token matches `http
 
 ## Mode A: Explicit files
 
-Parse the args to extract the repo name (first token) and the list of files (all remaining tokens). Then follow Steps 1-3 below.
+The first token is the repo name and the rest are the files. Follow Steps 1-3 below.
 
 ---
 
 ## Mode B: PR URL
 
-When a PR URL is provided (`https://<host>/<owner>/<repo>/pull/<number>`). Never check out a branch in the user's clone: it can fail on a dirty tree and it moves their work.
-
-### Step B1: Fetch PR metadata and diff
-
-```bash
-gh pr view <url> --json number,title,body,headRefName,headRefOid,baseRefName,changedFiles,files --jq '{number,title,body:.body[:3000],headRefName,headRefOid,baseRefName,changedFiles,files:[.files[].path]}'
-gh pr diff <url>
-```
-
-Hold the head commit (`headRefOid`), the changed file list and the diff. If `gh` fails (auth, no access), show the raw error and stop.
-
-### Step B2: Find the files at the PR head
-
-Look for a local clone: `<repos-root>/<repo>` (last segment of `<owner>/<repo>`), or the current directory. Accept it only if `git remote -v` contains `<host>/<owner>/<repo>`. Then:
-
-- If the clone's `git rev-parse HEAD` equals `headRefOid`, read files from the working tree. That clone is `ROOT` (CLAUDE.md and file links use it).
-- Otherwise do not switch branches. Read each file at the PR head with `gh api --hostname <host> "repos/<owner>/<repo>/contents/<path>?ref=<headRefOid>" -H "Accept: application/vnd.github.raw"` (quote the URL: `?` is a glob character in zsh), and take CLAUDE.md or AGENTS.md from the same API at that ref (if the API has none there, a copy from the clone's current checkout is the base branch's, possibly stale: say so). Reading a fork PR's head commit through the base repo's API works because GitHub exposes fork commits there; if it fails (for example the fork was deleted), say the head cannot be read and explain from the diff alone. With no local clone, `ROOT` is unset: take CLAUDE.md from the API and link files by their repo-relative path only; say so and explain from the diff and API content alone.
-
-### Step B3: Identify files to explain
-
-Use the `files` list from the PR metadata (it holds at most 100 paths: compare it with `changedFiles`, and for a larger pull request say so and ask which area to explain). These are the files changed by this PR. Explain all of them unless there are more than 8 - in that case, list them all and ask the user which ones to focus on.
-
-### Step B4: Proceed to Step 1 (load repo context) and Step 3 (explain files)
-
-This mode shows the diff and files only. For the CI result, review threads and conversation comments use the `pr-info` skill.
-
-Use the PR diff as additional context during the explanation. For each file, after the normal section-by-section breakdown, add a **"What changed in this PR"** section (for a file the PR adds, say "new file in this PR" and skip the section: it would repeat the breakdown) that:
-- Summarises what lines were added, removed, or modified (quoting key hunks from the diff)
-- Explains WHY each change was made - the problem it solves, the bug it fixes, the capability it adds
-- If the PR description explains the motivation, incorporate that context
-
----
+If the first token is a PR URL, **read `~/.claude/skills/understand/references/pr-mode.md` in full now** and follow it (it never checks out a branch), then continue with Steps 1 and 3 here. Skip it for Mode A.
 
 ## Step 1: Load repo context
 
@@ -87,10 +48,7 @@ If it exists (also look for `AGENTS.md`), read it fully to understand:
 - Key concepts, names and terminology specific to this repo
 
 If there is no CLAUDE.md, or it holds personal or global instructions and says nothing about this repo's structure, orient yourself from the README first, then a quick structural scan (in Mode B without a clone, use the changed file paths and the repo's README via the API instead):
-```bash
-ls <ROOT>/
-find <ROOT> -maxdepth 2 -type d | sort | head -40
-```
+`ls <ROOT>` (and a look at the top-level directories) is enough.
 
 Do not summarize the CLAUDE.md back to the user - just use it silently as context.
 
@@ -107,10 +65,10 @@ If a relative path was given, read it directly:
 
 If only a filename was given, search for it:
 ```bash
-find <ROOT> \( -name "<filename>" -o -name ".<filename>" -o -name "<filename>.*" \) -not -path "*/.git/*" | sort
+find <ROOT> -name "<filename>" -not -path "*/.git/*"
 ```
 
-(the extra patterns also find dotfiles and variants such as `zshrc` for `.zshrc` and `zshrc.local`). If a bare filename has several matches, list them and ask which one was meant, but explain the files that are unambiguous in the meantime: one ambiguous name must not block the others.
+(for a dotfile also try `.<filename>`). If a bare filename has several matches, list them and ask which one was meant, but explain the files that are unambiguous in the meantime: one ambiguous name must not block the others.
 
 ## Step 3: Explain each file
 
@@ -138,9 +96,7 @@ Use plain language. Avoid jargon without defining it first. If a term (a framewo
 
 ### Rules
 
-- Go file by file. Do not merge explanations across files.
-- Do not just describe what lines say - explain the reasoning and context behind them.
-- If the file references another file in the repo that is highly relevant, mention it with a relative path link.
-- If the file is generated or templated (e.g. a template, a code generator's output, a build artifact), note that and explain what it renders into.
-- Special files: for a file over about 600 lines read it in chunks (the Read tool stops at 2000 lines), outline it first (headings or function and class names), explain the structure and the parts that matter, and offer to go deeper on a named part. A binary cannot be read: say so and stop. A minified or generated file (a bundle, a lockfile, a compiled artifact): say what it is and what produces it, and describe its notable contents instead of going section by section. A notebook: explain it cell by cell in order, code and the analysis it carries.
-- Keep a consistent tone: knowledgeable but approachable, like a senior engineer walking a new hire through the code.
+- Go file by file; connect related files with relative links instead of merging their explanations.
+- Explain the reasoning and context, not just what the lines say. A generated or templated file: say so and what it renders into.
+- Special files: for a file over about 600 lines read it in chunks (the Read tool stops at 2000 lines), outline it first, explain the structure and the parts that matter, and offer to go deeper on a named part. A binary cannot be read: say so and stop. A minified or generated file (a bundle, a lockfile): say what it is and what produces it, and describe its notable contents. A notebook: explain it cell by cell.
+- Tone: knowledgeable but approachable, like a senior engineer walking a new hire through the code.

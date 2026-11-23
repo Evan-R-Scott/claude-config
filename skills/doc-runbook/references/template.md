@@ -7,13 +7,7 @@ Choose the type first, because it changes sections 5 to 7:
 - **Procedure** (use a tool, perform a routine or planned task): steps run in a fixed order.
 - **Alert response** (an alert fired, something is failing): triage first, then mitigate, then fix; the reader is under pressure and may be paged at night.
 
-**An alert response is not a procedure with a footnote; it changes the layout:**
-
-- Metadata: add the alert name and its source (monitor, dashboard link); leave out Time needed.
-- Leave out section 4 (Purpose and context) and section 5 (Before you start): nobody reads prerequisites mid-incident. Put one line "Access you need" at the top of Quick checks.
-- Section 6 becomes three h2 sections: **Impact and severity** (a small table: level, what it means, who to notify, when; use the team's own scale, otherwise High means users are affected now and Low means no user impact, and label an invented scale "(assumption)"), **Quick checks** (a table: check, command, what a bad result looks like, next step; it replaces section 8, Troubleshooting) and **Mitigation** (restore service before diagnosing: restart, fail over, scale or roll back; when the cause is a recent change, rolling back is the mitigation, so section 9 becomes a step here). Notify at the severity that calls for it, in parallel with the first check, not after the mitigation.
-- Escalation carries a time-box: "after N minutes without improvement". Label an unsourced N "(assumption)".
-- Mitigations usually change state and cannot be run safely while writing the page: source them from documentation or `--help`, tag them "(inferred, not run)", set Last tested to "not run end to end", and add to Follow-up a walk-through in staging or a game day.
+**For an Alert response read `~/.claude/skills/doc-runbook/references/alert-response.md` first**: it changes sections 2, 4, 5, 6, 8 and 9. A Procedure follows the sections below as written.
 
 Order is fixed. Sections marked (optional) are dropped when empty. Short sections; numbered lists and tables over prose.
 
@@ -21,7 +15,7 @@ Order is fixed. Sections marked (optional) are dropped when empty. Short section
 
 1. **Summary** (info panel, first thing on the page). What the page lets the reader do and when to use it, in 1-2 sentences. Alert response: the alert name or symptom that sends the reader here, and the impact.
 
-2. **Page metadata** (one line): Type (Procedure or Alert response), Owner (team or role), Last tested (a date and how: "run end to end" or "reviewed only"; write "not run end to end" with no date when nobody ran it), Review cadence, Applies to (system, environment, version), Time needed (Procedure only, and only if someone timed it).
+2. **Page metadata** (one line): Type (Procedure or Alert response), Status (Draft until someone approves it), Owner (team or role), Last tested (a date and how: "run end to end" or "reviewed only"; write "not run end to end" with no date when nobody ran it), Review cadence, Applies to (system, environment, version), Time needed (Procedure only, and only if someone timed it).
 
 3. **Table of contents** (levels 2-3), for pages longer than a screen.
 

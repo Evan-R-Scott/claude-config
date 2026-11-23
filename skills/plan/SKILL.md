@@ -66,153 +66,30 @@ Do not skip reading the code (delegating the sweep is one way to do it). A plan 
 
 ---
 
-## Step 4: Web search for documentation and best practice
+## Step 4: Research, scaled to risk
 
-Scale research to risk. Search for every decision that depends on an external API, library version, security pattern or practice you are not certain is current; skip it for purely internal changes the codebase already settles. Use official docs, not memory. APIs change, best practices evolve, and libraries deprecate.
-
-Skip this step when nothing depends on an external API, library, security practice or standard (all comments in PR fix mode are non-code, or the change is purely internal). Otherwise search for each relevant component:
-- Language feature or API being used: confirm correct usage and current version
-- Library or framework: official docs, changelog, deprecation notices
-- Security patterns (auth, input validation, secret handling, access control): best practices for the stack in use
-- Design patterns: confirm the approach matches current recommendations
-- Any non-obvious approach: find authoritative guidance before committing to it
-
-For each search: note source URL, key recommendation, whether it changes the design. If a search reveals the planned approach is deprecated or suboptimal, redesign that part and note the source.
+Search official docs (not memory) only for decisions that depend on an external API, library version, security practice or standard you are not certain is current. Skip this step for purely internal changes and when no PR comment is about code. For each search note the source, the recommendation and whether it changed the design; if the planned approach is deprecated or suboptimal, redesign that part and cite the source.
 
 ---
 
 ## Step 5: Design the implementation
 
-In PR fix mode with no Implement verdicts, skip Step 5: there is nothing to design.
+In PR fix mode with no Implement verdicts, skip this step: there is nothing to design.
 
-**5a: Architecture decisions.** For each significant choice: Decision, Rationale (grounded in Steps 2-4), Alternatives considered, and its correctness (error paths, edge cases, concurrency), simplicity (one thing per component, existing utilities reused) and scalability (growth without rework, no hard-coded values that should be parameters) tradeoffs; judge only the axes that matter for this decision (scalability only where growth is a real concern).
-
-**5b: Compatibility check.** Cross-reference decisions against the codebase from Steps 2-3:
-- Naming and patterns follow existing conventions?
-- Dependencies or interfaces the new code must interoperate with?
-- Existing tests that will need updating?
-- Anything currently working that this change could break?
+For each significant choice record the decision, the rationale (from Steps 2-4), the alternatives considered, and the tradeoffs that matter for it (correctness, simplicity, and scalability only where growth is a real concern). Check against the code: conventions followed, interfaces to interoperate with, tests that need updating, anything working that this change could break.
 
 ---
 
 ## Step 6: Write the plan
 
-In PR fix mode also follow `references/pr-fix-mode.md`: it adds a PR Fix Context section right after the Summary, an Addresses line on each step, and the record ordering.
+Always present: Summary, Implementation Steps, Testing and Validation, Documentation Changes. Each may be one line ("None: no code changes") when that is the truth. Include anything else only when it adds information. Every check must be runnable by someone who did not write the plan and have a concrete, observable outcome; vague steps are useless.
 
-Implementation Steps, Testing and Validation and Documentation Changes are always present, but each may be one line ("None: no code changes") when that is the truth. Include every other section only when it adds information for this task, and in PR fix mode do not repeat what the per-comment records already say in Context or Design Decisions (a one-file fix does not need a component diagram or scalability design). Vague steps are useless.
-
----
-
-# Implementation Plan: `<task title>`
-
-## Summary
-
-2-4 sentences: what this implements, why, and what the end state looks like.
-
-**Mode:** Net-new / PR fix | **Repos:** | **Language/stack:**
-
----
-
-
-## Context and Current State *(omit if nothing to say)*
-
-What the codebase currently does in the relevant area, what's missing, pre-existing issues the plan should be aware of.
-
----
-
-## Architecture
-
-### Design Decisions
-Choice, rationale, alternatives, correctness/simplicity/scalability tradeoffs. Reference Step 4 sources.
-
-Add the following only when the change is non-trivial: a **Component Diagram** (ASCII), **Correctness Design** (invalid inputs, partial failures, concurrent access, edge cases) and **Scalability Design** (how it handles growth and what parameters control it).
-
----
-
-## Prerequisites *(only when there are any)*
-
-- [ ] Dependencies to add (package names and versions)
-- [ ] Config or environment variables to set
-- [ ] Existing resources or systems that must be in a specific state
-- [ ] Branch/PR targets per repo
-- [ ] Approvals or coordination required
-
----
-
-## Implementation Steps
-
-Each step: atomic, reversible where possible, specific (exact file paths, function names, values), scoped (which repo and directory).
-
-### Step N: `<title>`
-
-**Repo:** | **File(s):**
-**Purpose:** One sentence on what this does and why it's at this point in the order.
-
-Exact description of what to change/create. Show relevant code snippets or pseudocode where the change is non-obvious.
-
-**Revert:** how to undo this step, only when it is not a plain git revert.
-
----
-
-*(Repeat. Net-new: foundational pieces first, then dependent layers. PR fix: foundational issues before surface-level, logical sequence.)*
-
----
-
-## Testing and Validation
-
-Every check must be runnable by someone who didn't write the plan. Each produces a specific, observable outcome.
-
-**Principles:** Test each layer before end-to-end. Test the unhappy path and edge cases. Scale the checks to the risk: a docs-only or one-line change needs one check, not a full matrix.
-
-### Pre-implementation baseline
-State to diff against after:
-- Current test suite results; with no test suite, capture the current behavior to a file (the output of the commands the change affects) and diff it after
-- Key behaviors or outputs to verify are preserved
-
-### Post-implementation validation (per step)
-
-**Validate Step N:** `<title>`
-
-What to run and what specific output/behavior to expect. Not "should work" - a concrete observable outcome.
-
-### End-to-end validation
-
-One check per user-visible behavior: **E2E N: `<what>`** - steps to exercise it and the concrete expected result. Include at least one failure or edge case and one regression check against the baseline when the change can affect existing behavior. With no code changes there is nothing to test: say so in one line.
-
-### Rollback procedure *(only when the change is not a clean git revert, for example data, config, infrastructure or migrations)*
-1. Specific revert step
-2. Verify rollback by re-running baseline check
-
----
-
-## Documentation Changes
-
-### Files to create
-| File | Location | What to document |
-|---|---|---|
-
-### Files to update
-| File | Location | Section | Change needed |
-|---|---|---|---|
-
-### Files to delete
-| File | Location | Why |
-|---|---|---|
-
-### CLAUDE.md updates
-Only when the repo uses a trigger-style CLAUDE.md or AGENTS.md: new operational area → trigger entry: which CLAUDE.md, `read this BEFORE <action>`, link to docs page. Inaccurate trigger → note update needed.
-
----
-
-## Sources and References
-
-- `<Decision>`: [title](url) - one-line summary of what it contributed (or "none needed" when nothing external applied)
-
----
-
-## Open Questions *(omit if none)*
-
-- **Question:** | **Impact:** which steps affected | **Options:** viable choices and implications
+- **Summary:** 2-4 sentences (what, why, the end state), plus mode, repos and language or stack. In PR fix mode also follow `references/pr-fix-mode.md`: it adds a PR Fix Context section right after the Summary, an Addresses line on each step, and the record ordering.
+- **Implementation Steps:** atomic, reversible where possible, specific (exact files, functions, values), foundational pieces first. Each step: repo and files, purpose (why it sits at this point in the order), the exact change (snippets or pseudocode where non-obvious), and a revert note only when it is not a plain git revert.
+- **Testing and Validation:** a baseline to diff against (the current suite results; with no suite, capture the current behavior of the affected commands to a file and diff it after), a check per step (what to run, the concrete expected outcome), and one end-to-end check per user-visible behavior including a failure or edge case and a regression check against the baseline. With no code changes there is nothing to test: say so.
+- **Documentation Changes:** the files to create, update or delete and what changes in each. A CLAUDE.md or AGENTS.md trigger entry only when the repo uses trigger-style files.
+- **Optional, only when they add information:** Context and Current State; Design Decisions with alternatives; for a non-trivial change a component diagram, correctness design (invalid inputs, partial failures, concurrency) and scalability design; Prerequisites (dependencies, config, required state, approvals); a Rollback procedure (only when the change is not a clean git revert: data, config, infrastructure, migrations); Sources (decision, link, what it contributed, or "none needed"); Open Questions (question, impact, options).
+- In PR fix mode do not repeat in Context or Design Decisions what the per-comment records already say.
 
 ---
 
@@ -221,9 +98,3 @@ Only when the repo uses a trigger-style CLAUDE.md or AGENTS.md: new operational 
 Present the plan in full in the conversation (unless the user named a file). Ask whether to proceed or revise (if you cannot ask, list the open questions instead and stop). Do not start implementation until the user explicitly approves. If the user requests changes: revise relevant sections, re-run affected web searches if the change materially alters the design, present updated plan.
 
 ---
-
-## Rules
-
-- Plan only, never implement. Prefer reading the codebase over asking the user; batch all questions into one AskUserQuestion call.
-- PR fix mode: triage every comment before planning any step; every Decline and every Already handled needs specific evidence; every implementation step traces to an Implement verdict.
-- Cite every design decision that came from a documentation source; no generic boilerplate.
