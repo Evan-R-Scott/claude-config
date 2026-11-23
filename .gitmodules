@@ -1,0 +1,3 @@
+[submodule "vendor/claude-code-owasp"]
+	path = vendor/claude-code-owasp
+	url = https://github.com/agamm/claude-code-owasp

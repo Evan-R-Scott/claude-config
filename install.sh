@@ -54,6 +54,18 @@ if [ "$LIST" = 1 ]; then
   exit 0
 fi
 
+# Vendored skills live in git submodules (see .gitmodules). Fetch any that are missing,
+# so a plain clone (without --recurse-submodules) still gets them.
+if [ -f "$ROOT/.gitmodules" ] && [ -e "$ROOT/.git" ]; then
+  if git -C "$ROOT" submodule status | grep -q '^-'; then
+    if [ "$DRY" = 1 ]; then
+      say "would: git submodule update --init"
+    else
+      git -C "$ROOT" submodule update --init || die "could not fetch vendored skills (network?), see .gitmodules"
+    fi
+  fi
+fi
+
 # Resolve requested skills plus requirements. Sets RESOLVED and FULLONLY.
 resolve() {
   RESOLVED=""

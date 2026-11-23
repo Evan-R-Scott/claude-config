@@ -7,7 +7,7 @@ My portable Claude Code setup: global instructions, on-demand docs, generic skil
 Needs `git` and `python3`.
 
 ```
-git clone https://github.com/Evan-R-Scott/claude-config.git ~/claude-config
+git clone --recurse-submodules https://github.com/Evan-R-Scott/claude-config.git ~/claude-config
 cd ~/claude-config && ./install.sh
 ```
 
@@ -25,11 +25,13 @@ Read [dotfiles/README.md](dotfiles/README.md) for what it does, how secrets are 
 
 ## Keeping it up to date
 
-Claude captures lessons by itself. Only two things are manual:
+Claude captures lessons by itself. Only these are manual:
 
 1. **When a session starts with "N lessons pending, run /curate"**, run this in Claude Code (any folder): `/curate`
    Read the diff it shows, confirm, and answer yes to "push now?".
 2. **On another laptop, to get the latest**: `git -C ~/claude-config pull` (re-run `./install.sh` only if new skills were added).
+
+3. **Vendored skills** (`owasp-security`, from [agamm/claude-code-owasp](https://github.com/agamm/claude-code-owasp)) are git submodules pinned to a reviewed commit. `./install.sh` fetches them if the clone skipped `--recurse-submodules`. To take upstream updates: `git submodule update --remote --merge vendor/claude-code-owasp`, skim the diff, then commit the new pointer.
 
 Review what is learned in `~/claude-config/docs/` (five short files, plus `CLAUDE.md`). Pending lessons wait in `~/claude-config/docs/_inbox.md`.
 
