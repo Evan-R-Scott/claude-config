@@ -65,6 +65,8 @@ For each comment expand:
 
 ### Implementation steps in this mode
 
+Each step has an `Addresses: Comment #N (verdict)` line naming the comment it answers. Say what the current code does versus what it does after the fix, grounded in the file content from 1c; for "Implement with modification" explain why the approach differs from the reviewer's suggestion.
+
 Only Implement-verdict comments become steps. Each step references the comment #. Out-of-scope items go to follow-up, not here.
 
 ### Order of the per-comment records
