@@ -1,6 +1,6 @@
 ---
 name: plan
-description: Read the task from recent session context, inspect the codebase, web-search docs and best practice, and produce a complete implementation plan with ordered steps, end-to-end testing/validation, and documentation change list. Usage: /plan
+description: "Read the task from recent session context, inspect the codebase, web-search docs and best practice, and produce a complete implementation plan with ordered steps, end-to-end testing/validation, and documentation change list. Usage: /plan"
 metadata:
   version: "1.0.0"
   category: planning

@@ -1,6 +1,6 @@
 ---
 name: doc-runbook
-description: "Write or restructure a RUNBOOK or HOW-TO document: step-by-step instructions to use a tool, perform an operational task, or respond to an alert or failure, with a fixed template, as a Confluence page or a Markdown file in a repo. Use for a runbook, playbook, SOP, on-call or alert-response procedure, "how do I" or "what to do when X fires" page. Use ONLY for procedural, task-oriented docs. Do NOT use for system or architecture design docs (doc-design), a README, onboarding guide or tutorial, meeting notes, project plans or status, release notes, API, CLI or reference docs, post-mortems, or ADRs and decision records. Usage: /doc-runbook <task | existing doc path or url>"
+description: "Write or restructure a RUNBOOK or HOW-TO document: step-by-step instructions to use a tool, perform an operational task, or respond to an alert or failure, with a fixed template, as a Confluence page or a Markdown file in a repo. Use for a runbook, playbook, SOP, on-call or alert-response procedure, a how-do-I page, or a what-to-do-when-an-alert-fires page. Use ONLY for procedural, task-oriented docs. Do NOT use for system or architecture design docs (doc-design), a README, onboarding guide or tutorial, meeting notes, project plans or status, release notes, API, CLI or reference docs, post-mortems, or ADRs and decision records. Usage: /doc-runbook <task | existing doc path or url>"
 metadata:
   version: "1.0.0"
   category: documentation

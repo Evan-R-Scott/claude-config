@@ -1,6 +1,6 @@
 ---
 name: curate
-description: Merge captured lessons from the inbox into the global docs, keeping them small, generalizable and free of contradictions. Always shows a diff and waits for confirmation before writing. Usage: /curate
+description: "Merge captured lessons from the inbox into the global docs, keeping them small, generalizable and free of contradictions. Always shows a diff and waits for confirmation before writing. Usage: /curate"
 disable-model-invocation: true
 metadata:
   version: "1.0.0"

@@ -1,6 +1,6 @@
 ---
 name: understand
-description: Explain one or more files from a local repo step by step, with context pulled from the repo's CLAUDE.md. Usage: /understand <repo-name> <file1> [file2] ... OR /understand <github-pr-url>
+description: "Explain one or more files from a local repo step by step, with context pulled from the repo's CLAUDE.md. Usage: /understand <repo-name> <file1> [file2] ... OR /understand <github-pr-url>"
 metadata:
   version: "1.1.0"
   category: learning
