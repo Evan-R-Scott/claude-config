@@ -35,7 +35,7 @@ A `path` that is a subdirectory and every `--only <path>` become pathspecs, made
 
 Make one run directory with `mktemp -d <scratchpad>/review-XXXXXX` (or plain `mktemp -d` if the system prompt lists no scratchpad directory), call it `RUN`, and name it in the report. Never use the scratchpad directory itself as `RUN`, because the cleanup removes `RUN`.
 
-**Trust:** changes in the working copy are trusted when the repository's history shows the configured user among its authors (`git --no-optional-locks -C <root> log -20 --format=%ae`); in a clone whose recent commits are all by others, untracked or modified files still count as the user's own edits only if the user says so, so treat the change as untrusted unless the user passed `--trust` or confirms. `--commit`, `--range` and `--base` are trusted only if every commit in scope is authored by the configured user, or the user passed `--trust`; otherwise untrusted (see the engine's **Trust**). Read the authors with `git --no-optional-locks -C <root> log --format=%ae <scope>` where `<scope>` is `<id>^!` for `--commit`, `<a>..<b>` for `--range` and `<MB>..HEAD` for `--base`, and compare with `git -C <root> config user.email`. Author emails can be forged, so this is a heuristic.
+**Trust:** changes in the working copy are trusted only when `git -C <root> config user.email` appears among the last 20 commit authors (`git --no-optional-locks -C <root> log -20 --format=%ae`); otherwise untrusted unless the caller passed `--trust`. The review subagent never asks: when the parent skill sees this case it asks the user before dispatching. `--commit`, `--range` and `--base` are trusted only if every commit in scope is authored by the configured user, or the user passed `--trust`; otherwise untrusted (see the engine's **Trust**). Read the authors with `git --no-optional-locks -C <root> log --format=%ae <scope>` where `<scope>` is `<id>^!` for `--commit`, `<a>..<b>` for `--range` and `<MB>..HEAD` for `--base`, and compare with `git -C <root> config user.email`. Author emails can be forged, so this is a heuristic.
 
 **Base** (for the engine's "is this failure new?" re-run): the working copy and `--staged` use `HEAD` (a repository with no commit yet has none: report the base as none); `--unstaged` uses the index; `--base <ref>` uses the merge-base SHA; `--commit <id>` uses `<id>^` (a root commit has none: report the base as none); `--range <a>..<b>` uses `<a>`; export it to `<RUN>/base-tree` the way **Execution copy** says.
 
@@ -85,7 +85,7 @@ Working copy (no scope flag, `--unstaged`, `--base`): copy exactly the files tha
 
 ```bash
 mkdir -p <RUN>/tree
-git --no-optional-locks -C <root> ls-files -co --exclude-standard -z | rsync -a --copy-unsafe-links --ignore-missing-args --from0 --files-from=- <root>/ <RUN>/tree/
+git --no-optional-locks -C <root> ls-files -co --exclude-standard -z | rsync -a --safe-links --ignore-missing-args --from0 --files-from=- <root>/ <RUN>/tree/
 ```
 
 `--staged`, `--commit` and `--range` run on the content of that index or commit, not the working tree: export it with a temporary index, which ignores `.gitattributes` export rules and never touches the real index:

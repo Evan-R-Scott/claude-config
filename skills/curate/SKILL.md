@@ -26,7 +26,7 @@ Merge candidate lessons from `docs/_inbox.md` into the topic docs. The user conf
 ## 2. Prepare
 
 - Checkpoint commit of the user's own uncommitted edits to CLAUDE.md and `docs/` (skip when `git -C ROOT status --porcelain -- CLAUDE.md docs` prints nothing, which also covers new untracked files; never abort on "nothing to commit"): `git -C ROOT add CLAUDE.md docs` then `git -C ROOT commit -m "Checkpoint before curate" -- CLAUDE.md docs` (the pathspec keeps any other staged work in the clone out of the commit). This keeps the curate commit to curate's own changes, so undo by revert is clean.
-- Then, if a remote exists and `git -C ROOT status --porcelain` prints nothing: `git -C ROOT pull --rebase`. On a conflict stop, show it and leave the inbox as it is (`.processing` is picked up next run). The checkpoint and the pull are the only writes before the user confirms.
+- Then, if a remote exists and `git -C ROOT status --porcelain` prints nothing: `git -C ROOT pull --rebase`. On a conflict stop, show it and leave the inbox as it is (`.processing` is picked up next run). The checkpoint and the pull are the only commits before the user confirms (skip the pull and say so when the tree has other changes; if the checkpoint commit fails, for example no git identity, stop and show the error).
 
 ## 3. Promotion gate (the only definition of the gate)
 
@@ -50,8 +50,8 @@ Entries that fail are listed with the failing criterion and discarded. No repeti
 
 ## 5. Confirm, write, finish
 
-- Show: the diff, the promoted entries and where they went, the rejected entries with reasons.
-- Show the diff, then write only after the user confirms. If nobody can confirm (a non-interactive run), stop after showing the diff: write nothing and leave `_inbox.processing` for the next run. Then `git -C ROOT add CLAUDE.md docs` and, only if `git -C ROOT status --porcelain -- CLAUDE.md docs` shows changes, commit (`git -C ROOT commit -m "Curate lessons" -- CLAUDE.md docs`, no co-author or generated-with lines) and delete `ROOT/docs/_inbox.processing`.
+- Show: the diff (`git -C ROOT diff -- CLAUDE.md docs`, the step 4 edits are in the tree but uncommitted), the promoted entries and where they went, the rejected entries with reasons.
+- Commit only after the user confirms; on a no, or when nobody can confirm (a non-interactive run), run the Undo command for an unfinished run and leave `_inbox.processing` for the next run. To commit: `git -C ROOT add CLAUDE.md docs` and, only if `git -C ROOT status --porcelain -- CLAUDE.md docs` shows changes, commit (`git -C ROOT commit -m "Curate lessons" -- CLAUDE.md docs`, no co-author or generated-with lines) and delete `ROOT/docs/_inbox.processing`.
 - Ask "push now?" and push only on yes.
 
 ## Undo

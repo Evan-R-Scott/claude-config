@@ -19,7 +19,7 @@ One or more files or folders. Optionally `--base-dir <dir>`: a checkout onto whi
 ## Collect
 
 - Expand each path: a file is reviewed whole; a folder is walked (skip `.git`, `.svn`, `node_modules`, `.venv`, build output, binaries, and generated files; say what you skipped).
-- A `.patch` or `.diff` file (or a diff pasted into the conversation, which the caller saves to a file first) is a change set: read the patch itself. If a checkout is named too (`--base-dir <dir>`), copy it to `<RUN>/base/` (`rsync -a --copy-unsafe-links --exclude=.git --exclude=node_modules --exclude=.venv <base-dir>/ <RUN>/base/`, a separate directory from `<RUN>/tree/` where the patch file itself goes) and apply the patch there (`git apply --check`, then `git apply`) so the changed files can be read and tested whole; otherwise say it was not applied and nothing was run.
+- A `.patch` or `.diff` file (or a diff pasted into the conversation, which the caller saves to a file first) is a change set: read the patch itself. If a checkout is named too (`--base-dir <dir>`), copy it to `<RUN>/base/` (`rsync -a --safe-links --exclude=.git --exclude=node_modules --exclude=.venv <base-dir>/ <RUN>/base/`, a separate directory from `<RUN>/tree/` where the patch file itself goes) and apply the patch there (`git apply --check`, then `git apply`) so the changed files can be read and tested whole; otherwise say it was not applied and nothing was run.
 - Infer what each file is for from its content, its neighbors and any README. State the inferred purpose in the Summary. You cannot ask.
 
 ## Trust and run directory
@@ -32,7 +32,7 @@ Read each file directly, but never follow a symlink whose target lies outside th
 
 ## Execution copy
 
-Copy the paths to `<RUN>/tree/` with `rsync -a --relative --exclude=.git --exclude=node_modules --exclude=.venv <parent>/./<path1> <parent>/./<path2> ... <RUN>/tree/` (`<parent>` is their common parent directory, the `/./` keeps each path's layout relative to it so same-named files from different folders do not collide; without `--copy-unsafe-links`, a symlink pointing outside is copied as a link (not its content): remove any such link from the copy before running checks, so a test can neither read nor write through it), and run checks there. For the project context (E1) look for `CLAUDE.md` and config files in the nearest ancestors of that parent; plain files have no repository root. Remove it at the end.
+Copy the paths to `<RUN>/tree/` with `rsync -a --safe-links --relative --exclude=.git --exclude=node_modules --exclude=.venv <parent>/./<path1> <parent>/./<path2> ... <RUN>/tree/` (`<parent>` is their common parent directory, the `/./` keeps each path's layout relative to it so same-named files from different folders do not collide; `--safe-links` leaves out every symlink that points outside the copy (absolute or `../` out of it), so a test can neither read nor write through one; links that stay inside are kept), and run checks there. For the project context (E1) look for `CLAUDE.md` and config files in the nearest ancestors of that parent; plain files have no repository root. Remove it at the end.
 
 ## Untouched check
 
