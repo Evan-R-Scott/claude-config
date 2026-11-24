@@ -24,7 +24,7 @@ Not every comment is a required fix. Comments from non-reviewers (bots, the auth
 - Are there interactions with adjacent code the reviewer didn't account for?
 - Is the scope right - is this the right fix for the right problem?
 
-Use "Implement with modification" liberally when the reviewer's concern is valid but their suggested approach is suboptimal. Explain *why* the modification is better, not just *what* it is. Never blindly implement a reviewer suggestion just because it was requested.
+Use "Implement with modification" when the concern is valid but the suggested approach is suboptimal; never implement a suggestion just because it was requested.
 
 *Reach a verdict:*
 - **Implement** - reviewer is correct and the proposed approach is the best option; describe what changes
@@ -36,7 +36,7 @@ Use "Implement with modification" liberally when the reviewer's concern is valid
 - **Defer** - concern is valid but out of scope; explain why and what follow-up should address it
 - **No action** - nothing is asked: a bot notice, a review overview, an echo or notification copy of another comment, an author reply, an already resolved thread. List these in one line instead of a full record
 
-Every Decline and every Already handled requires specific evidence. "This is fine as-is" is not a reason. Every "Implement with modification" must explain what is wrong with the reviewer's approach and why the alternative is better.
+Every Decline and Already handled needs specific evidence ("this is fine as-is" is not a reason); every Implement with modification says what is wrong with the reviewer's approach and why the alternative is better.
 
 **1e: Scope constraint.** PR fix mode is scoped to the PR's existing changes. Each implementation step must trace to an Implement-verdict comment. Out-of-scope improvements go to follow-up items.
 
@@ -61,13 +61,11 @@ For each comment expand:
 **Current implementation:** What the code at that location actually does (from 1c).
 **Research:** What was checked - code, doc, web search - and what it showed.
 **Verdict:** (from above)
-**Reasoning:** Evidence-backed explanation. For Decline and Already handled: cite exact source (doc URL, file:line, commit). For Answer: the full answer. For Defer: why out of scope and what follow-up covers it.
+**Reasoning:** the evidence (doc URL, file:line or commit), the full answer for an Answer, the follow-up for a Defer.
 
 ### Implementation steps in this mode
 
-Each step has an `Addresses: Comment #N (verdict)` line naming the comment it answers. Say what the current code does versus what it does after the fix, grounded in the file content from 1c; for "Implement with modification" explain why the approach differs from the reviewer's suggestion.
-
-Only Implement-verdict comments become steps. Each step references the comment #. Out-of-scope items go to follow-up, not here.
+Each step has an `Addresses: Comment #N (verdict)` line and says what the current code does versus after the fix, grounded in the file content from 1c. Only Implement-verdict comments become steps (see 1e).
 
 ### Order of the per-comment records
 
