@@ -32,7 +32,7 @@ Read each file directly, but never follow a symlink whose target lies outside th
 
 ## Execution copy
 
-Copy the paths to `<RUN>/tree/` with `rsync -a --safe-links --relative --exclude=.git --exclude=node_modules --exclude=.venv <parent>/./<path1> <parent>/./<path2> ... <RUN>/tree/` (`<parent>` is their common parent directory, the `/./` keeps each path's layout relative to it so same-named files from different folders do not collide; `--safe-links` leaves out every symlink that points outside the copy (absolute or `../` out of it), so a test can neither read nor write through one; links that stay inside are kept), and run checks there. For the project context (E1) look for `CLAUDE.md` and config files in the nearest ancestors of that parent; plain files have no repository root. Remove it at the end.
+Copy the paths to `<RUN>/tree/` with `rsync -a --safe-links --relative --exclude=.git --exclude=node_modules --exclude=.venv <parent>/./<path1> <parent>/./<path2> ... <RUN>/tree/` (`<parent>` is their common parent directory, the `/./` keeps each path's layout relative to it so same-named files from different folders do not collide; `--safe-links` leaves out every symlink that points outside the copy (absolute or `../` out of it), so a test can neither read nor write through one; relative links that stay inside are kept (an absolute link is always dropped)), and run checks there. For the project context (E1) look for `CLAUDE.md` and config files in the nearest ancestors of that parent; plain files have no repository root. Remove it at the end.
 
 ## Untouched check
 

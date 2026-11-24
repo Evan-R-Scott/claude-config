@@ -50,11 +50,11 @@ Entries that fail are listed with the failing criterion and discarded. No repeti
 
 ## 5. Confirm, write, finish
 
-- Show: the diff (`git -C ROOT diff -- CLAUDE.md docs`, the step 4 edits are in the tree but uncommitted), the promoted entries and where they went, the rejected entries with reasons.
+- Show: the diff (`git -C ROOT diff -- CLAUDE.md docs` for edits, plus every `??` file in `git -C ROOT status --porcelain -- CLAUDE.md docs` printed in full, since a diff omits new files; the step 4 edits are in the tree but uncommitted), the promoted entries and where they went, the rejected entries with reasons.
 - Commit only after the user confirms; on a no, or when nobody can confirm (a non-interactive run), run the Undo command for an unfinished run and leave `_inbox.processing` for the next run. To commit: `git -C ROOT add CLAUDE.md docs` and, only if `git -C ROOT status --porcelain -- CLAUDE.md docs` shows changes, commit (`git -C ROOT commit -m "Curate lessons" -- CLAUDE.md docs`, no co-author or generated-with lines) and delete `ROOT/docs/_inbox.processing`.
 - Ask "push now?" and push only on yes.
 
 ## Undo
 
-- Unfinished run (not yet committed): `git -C ROOT checkout -- CLAUDE.md docs` and delete any topic doc this run created (`git -C ROOT clean -f -- docs`). The inbox files are git-ignored, so captured lessons survive.
+- Unfinished run (not yet committed, or the user declined or could not confirm): `git -C ROOT checkout -- CLAUDE.md docs` and delete any topic doc this run created (`git -C ROOT clean -f -- docs`). The inbox files are git-ignored, so captured lessons survive.
 - Finished run: `git -C ROOT revert <curate commit>`.
