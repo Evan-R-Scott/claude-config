@@ -10,3 +10,4 @@ Judge whether following this would produce the intended result, safely.
 - **Risk:** what is the worst realistic outcome, how would it be noticed, and how is it undone? Security, data loss, outages, cost.
 - **Evidence:** claims about performance, cost, compatibility or user need should have a source or a measurement. Flag the ones that do not.
 - **Decisions and open questions:** are open questions listed with who decides? Is the recommendation clear?
+- **Generality:** apply `lens-general.md`: is each rule derived from a contract or principle rather than a few observed samples, is product-specific data kept out of logic, and do the planned tests vary the case or only repeat the examples?

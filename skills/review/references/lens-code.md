@@ -42,6 +42,9 @@ Work through every item that applies, and look for what the author did not think
 - DB migrations backward-compatible with rolling deploy? API contracts backward-compatible?
 - Requires a specific workflow or manual step to take effect? Behaves correctly at scale?
 
+### Generality
+- Apply `lens-general.md`: no rule, default or test fitted to the samples at hand (names, paths, ids, one product, customer or environment), structured fields used instead of matching text, product-specific values kept in configuration, unrecognized input degrading to the safe outcome?
+
 ### Architecture
 - Fits existing architecture or works around it?
 - Abstraction level correct? Circular dependencies or tight coupling introduced?

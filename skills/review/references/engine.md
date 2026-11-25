@@ -120,6 +120,9 @@ Apply the lens for each kind of file in the change set; a change set usually nee
 | Prompts, skills, agent instructions, `CLAUDE.md`, `AGENTS.md` | `lens-prompt.md` |
 | SQL migrations | `lens-config.md` (migrations) and `lens-code.md` |
 | Notebooks (`.ipynb`) | `lens-code.md`: review the cell sources; ignore outputs except for leaked secrets |
+| Every target, where it applies | `lens-general.md`: generalization and adaptability (nothing fitted to the examples at hand, product-specific data kept out of logic) |
+
+Also, for every target: apply `lens-general.md`. Report a place where a rule, default, check or test is fitted to a few samples or to one example as a finding (a rule that can misclassify a valid case is at least MEDIUM), and make each finding's direction fix the class of the issue, not only the reported instance.
 
 Also, for every target:
 

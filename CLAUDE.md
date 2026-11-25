@@ -24,7 +24,7 @@ Read the file BEFORE the action, not after.
 - Making a technical or design decision, or starting any work: `~/.claude/docs/workflow.md`
 - Fixing a bug: `~/.claude/docs/debugging.md`
 - Writing or running tests, handling a lint or test failure, committing, opening a PR or calling work done: `~/.claude/docs/testing.md`
-- Writing or editing a README, docs, a CLAUDE.md or a skill: `~/.claude/docs/communication.md`
+- Writing or editing a README, docs, a CLAUDE.md or a skill (skills in `~/.claude/skills` are general, never company or project specific; see the rule in that doc): `~/.claude/docs/communication.md`
 - Using a tool or CLI in an unfamiliar way, or after a tool surprises you: `~/.claude/docs/tooling.md`
 
 ## Learning loop

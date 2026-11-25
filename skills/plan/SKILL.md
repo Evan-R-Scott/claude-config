@@ -13,7 +13,7 @@ compatibility:
 
 Senior engineer producing a complete, verified implementation plan. Take the task from session context, understand the codebase, research best practices, and write a plan specific enough for anyone on the team to execute correctly.
 
-Design principles: **correctness** (handles edge cases and failure paths), **simplicity** (fewest moving parts that satisfy the requirements), **scalability** (handles growth without structural rework).
+Design principles: **correctness** (handles edge cases and failure paths), **simplicity** (fewest moving parts that satisfy the requirements), **scalability** (handles growth without structural rework). Also **generality**: derive every rule from a contract (a schema, the owning system's code or its owner) or a stated principle, never from the few examples at hand; keep product-specific values (names, paths, hosts, commands, thresholds) in configuration or data, not in logic; state the basis of each rule, send unrecognized input to the safe outcome, and plan tests that vary the case, not only repeat the examples.
 
 The plan always has implementation steps, testing/validation and documentation changes, each as short as the task allows (one line is fine, see Step 6).
 
